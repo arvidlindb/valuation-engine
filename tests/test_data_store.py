@@ -115,7 +115,16 @@ def test_rebuild_and_freeze_round_trip(tmp_path: Path, monkeypatch: pytest.Monke
     assert json.loads((cache / "download_summary.json").read_text())["loaded"] == 3
     rebuilt = loader.read_peer_table(store.Store(cache, "cache"))
     by_ticker = {peer.ticker: peer for peer in universe}
-    assert rebuilt == [by_ticker[t] for t in sorted(tickers)]  # identical to the committed rows
+    # Same as the committed rows. Floats are compared with a tolerance because the
+    # last digits of a regression beta differ between platforms (macOS vs Linux).
+    assert [peer.ticker for peer in rebuilt] == sorted(tickers)
+    for peer in rebuilt:
+        for field in fields(PeerSnapshot):
+            new, old = getattr(peer, field.name), getattr(by_ticker[peer.ticker], field.name)
+            if isinstance(old, float) and isinstance(new, float):
+                assert new == pytest.approx(old, rel=1e-9, abs=1e-9), (peer.ticker, field.name)
+            else:
+                assert new == old, (peer.ticker, field.name)
 
     monkeypatch.setenv("VALUATION_ENGINE_FIXTURES_DIR", str(frozen))
     assert download.main(["--freeze", "atco-a.st", "VSURE.ST"]) == 0
