@@ -1,0 +1,12 @@
+# Streamlit configuration of the valuation engine app.
+# The charts are rendered as white cards, so the app is pinned to a light theme.
+
+[theme]
+base = "light"
+primaryColor = "#2a78d6"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f4f5f7"
+textColor = "#16181d"
+
+[browser]
+gatherUsageStats = false
