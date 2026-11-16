@@ -1,0 +1,28 @@
+{
+ "schema_version": 1,
+ "description": "Reference values for market parameters that are not fetched at runtime. Read by valuation_engine.data.market_params.",
+ "how_to_refresh": "Damodaran updates the country risk premium table every January (and mid-year). Open the source URL, find the row 'Sweden' and copy 'Total Equity Risk Premium', 'Country Risk Premium' and 'Corporate Tax Rate' into this file as decimals; set 'as_of' to the date stated in the file and 'retrieved' to today's date. The file is never downloaded or parsed at runtime.",
+ "parameters": {
+  "equity_risk_premium": {
+   "value": 0.0423,
+   "source": "Damodaran, Country Default Spreads and Risk Premiums - Sweden (Moody's Aaa), total equity risk premium",
+   "url": "https://pages.stern.nyu.edu/~adamodar/pc/datasets/ctryprem.xlsx",
+   "as_of": "2026-01-01",
+   "retrieved": "2026-11-16"
+  },
+  "country_risk_premium": {
+   "value": 0.0,
+   "source": "Damodaran, Country Default Spreads and Risk Premiums - Sweden (Moody's Aaa), country risk premium (already included in the total equity risk premium)",
+   "url": "https://pages.stern.nyu.edu/~adamodar/pc/datasets/ctryprem.xlsx",
+   "as_of": "2026-01-01",
+   "retrieved": "2026-11-16"
+  },
+  "tax_rate": {
+   "value": 0.206,
+   "source": "Damodaran, Country Default Spreads and Risk Premiums - Sweden, corporate tax rate (the Swedish statutory rate since 2021)",
+   "url": "https://pages.stern.nyu.edu/~adamodar/pc/datasets/ctryprem.xlsx",
+   "as_of": "2026-01-01",
+   "retrieved": "2026-11-16"
+  }
+ }
+}
