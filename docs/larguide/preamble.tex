@@ -1,0 +1,162 @@
+% Preamble for the study guide. Built with tectonic (XeTeX engine).
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage[mono=false]{libertinus}
+\usepackage{fontspec}
+\setmonofont{DejaVuSansMono.ttf}[
+  Scale=0.80,
+  HyphenChar=None,
+  BoldFont=DejaVuSansMono-Bold.ttf,
+  ItalicFont=DejaVuSansMono-Oblique.ttf,
+  BoldItalicFont=DejaVuSansMono-BoldOblique.ttf]
+\usepackage{polyglossia}
+\setdefaultlanguage{swedish}
+\setotherlanguage{english}
+\usepackage[a4paper,left=2.5cm,right=2.5cm,top=2.3cm,bottom=2.6cm,footskip=1.1cm]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks,unicode,bookmarksnumbered,bookmarksopen,bookmarksopenlevel=1]{hyperref}
+\usepackage{bookmark}
+
+\graphicspath{{../figures/}}
+
+% ---------------------------------------------------------------- colours
+\definecolor{accent}{HTML}{1F4E79}
+\definecolor{boxblue}{HTML}{1F5FA8}
+\definecolor{boxred}{HTML}{B5402F}
+\definecolor{boxgreen}{HTML}{217A52}
+\definecolor{boxgray}{HTML}{5F6670}
+\definecolor{codebg}{HTML}{F5F6F8}
+\definecolor{codeframe}{HTML}{D4D8DE}
+\definecolor{codegray}{HTML}{6A737D}
+\definecolor{codeblue}{HTML}{1F4E79}
+\definecolor{codegreen}{HTML}{2D6A4F}
+
+% ---------------------------------------------------------------- KOMA
+\KOMAoptions{parskip=half-,headings=small,captions=tableheading,toc=flat}
+\DeclareTOCStyleEntries[raggedentrytext=true]{tocline}{section,subsection}
+\setkomafont{disposition}{\sffamily\bfseries\color{accent}}
+\setkomafont{title}{\sffamily\bfseries\color{accent}}
+\setkomafont{subtitle}{\sffamily\color{black!70}}
+\setkomafont{caption}{\small}
+\setkomafont{captionlabel}{\small\sffamily\bfseries\color{accent}}
+\setcapindent{0pt}
+\addtokomafont{descriptionlabel}{\rmfamily\bfseries}
+\RedeclareSectionCommand[beforeskip=1.6\baselineskip,afterskip=0.6\baselineskip]{section}
+\RedeclareSectionCommand[beforeskip=1.0\baselineskip,afterskip=0.3\baselineskip]{subsection}
+\RedeclareSectionCommand[beforeskip=0.7\baselineskip,afterskip=0.15\baselineskip]{subsubsection}
+\addtokomafont{section}{\Large}
+% Little stretch between paragraphs: with the default (plus half a line) a ragged-bottom page
+% can be cut short at any heading, which leaves large gaps at the foot of the page.
+\setparsizes{0pt}{0.5\baselineskip plus 0.6pt}{0pt plus 1fil}
+\setlength{\textfloatsep}{14pt plus 2pt minus 2pt}
+\setlength{\intextsep}{12pt plus 2pt minus 2pt}
+\setlength{\floatsep}{12pt plus 2pt minus 2pt}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\renewcommand{\floatpagefraction}{0.8}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.08}
+\setlength{\emergencystretch}{2em}
+\setlist{itemsep=0.15em,topsep=0.3em,parsep=0pt,leftmargin=1.6em}
+\setlist[description]{leftmargin=1.6em,labelindent=0pt}
+
+% ---------------------------------------------------------------- decimal comma
+% Same behaviour as the icomma package (a comma followed by a space is punctuation,
+% otherwise a decimal comma), but set up after unicode-math so that the comma glyph
+% comes from the math font in use.
+\makeatletter
+\AtBeginDocument{%
+  \Umathcharnumdef\mathcomma=\Umathcodenum`\,\relax
+  \mathcode`\,="8000\relax}
+\begingroup\catcode`\,=\active
+  \gdef,{\futurelet\@let@token\sm@rtcomma}
+\endgroup
+\def\sm@rtcomma{%
+  \ifx\@let@token\@sptoken\else\ifx\@let@token\space\else\mathord\fi\fi\mathcomma}
+\makeatother
+
+% ---------------------------------------------------------------- numbers
+\sisetup{output-decimal-marker={,},group-separator={\,},group-minimum-digits=4,
+         detect-all,mode=match}
+\newcommand{\pct}{\,\%}
+\newcommand{\kr}{\,kr}
+\newcommand{\x}{\ensuremath{\times}}          % "19,4\x" = 19,4 times
+
+% ---------------------------------------------------------------- text macros
+\newcommand{\eng}[1]{(\textenglish{\emph{#1}})}
+\newcommand{\en}[1]{\textenglish{\emph{#1}}}
+\newcommand{\kod}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\flag}[1]{\texttt{-{}-\detokenize{#1}}}   % command line flag
+\newcommand{\EV}{\mathrm{EV}}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\FCFF}{\mathrm{FCFF}}
+\newcommand{\FCFE}{\mathrm{FCFE}}
+\newcommand{\EBITDA}{\mathrm{EBITDA}}
+\newcommand{\EBIT}{\mathrm{EBIT}}
+\newcommand{\NOPAT}{\mathrm{NOPAT}}
+\newcommand{\WACC}{\mathrm{WACC}}
+\newcommand{\ERP}{\mathrm{ERP}}
+\newcommand{\NWC}{\mathrm{NWC}}
+\newcommand{\PV}{\mathrm{PV}}
+\newcommand{\IRR}{\mathrm{IRR}}
+\newcommand{\MOIC}{\mathrm{MOIC}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\E}{\operatorname{E}}
+\newcommand{\T}{^{\mathsf{T}}}
+
+% ---------------------------------------------------------------- callouts
+\newtcolorbox{callout}[2]{enhanced,breakable=false,colback=#1!5!white,colframe=#1,
+  boxrule=0pt,leftrule=3pt,arc=0pt,outer arc=0pt,left=8pt,right=8pt,top=5pt,bottom=5pt,
+  before skip=0.8\baselineskip,after skip=0.8\baselineskip,
+  fonttitle=\sffamily\bfseries\small,coltitle=#1,colbacktitle=#1!5!white,
+  title={#2},attach title to upper={\quad},parbox=false}
+\newenvironment{komihag}{\begin{callout}{boxblue}{Kom ihåg}}{\end{callout}}
+\newenvironment{vanligtfel}{\begin{callout}{boxred}{Vanligt fel}}{\end{callout}}
+\newenvironment{intervjutips}{\begin{callout}{boxgreen}{Intervjutips}}{\end{callout}}
+\newenvironment{imotorn}{\begin{callout}{boxgray}{Så gör motorn}}{\end{callout}}
+
+% ---------------------------------------------------------------- listings
+\lstdefinestyle{base}{basicstyle=\ttfamily\small,columns=fullflexible,keepspaces=true,
+  backgroundcolor=\color{codebg},frame=single,rulecolor=\color{codeframe},framerule=0.4pt,
+  xleftmargin=6pt,xrightmargin=6pt,framesep=5pt,aboveskip=0.7\baselineskip,
+  belowskip=0.5\baselineskip,showstringspaces=false,breaklines=true,breakatwhitespace=true,
+  upquote=true,literate={-}{{-}}1}
+\lstdefinestyle{py}{style=base,language=Python,keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegray}\itshape,stringstyle=\color{codegreen}}
+\lstdefinestyle{sh}{style=base,language=bash,keywordstyle=\color{black},
+  commentstyle=\color{codegray}\itshape,stringstyle=\color{black}}
+\lstdefinestyle{txt}{style=base,language={}}
+\lstset{style=py}
+\AtBeginDocument{\renewcommand{\lstlistingname}{Kodexempel}}
+
+% ---------------------------------------------------------------- Q&A and exercises
+\newcounter{fraga}
+\newenvironment{fraga}[1]{\par\addvspace{0.9\baselineskip}\refstepcounter{fraga}%
+  \noindent\begin{minipage}{\linewidth}\setlength{\parskip}{0.4\baselineskip plus 0.6pt}%
+  \noindent\textsf{\textbf{\color{accent}Q\thefraga.}}\enspace\textenglish{\textbf{#1}}\par
+  \noindent\ignorespaces}{\end{minipage}\par}
+\newcommand{\fraser}[1]{\par\noindent{\small\textsf{\textbf{Säg på engelska:}}
+  \textenglish{\itshape #1}}\par}
+\newcounter{ovning}
+\newenvironment{ovning}[1][]{\par\refstepcounter{ovning}\addvspace{0.8\baselineskip}%
+  \noindent\textsf{\textbf{\color{accent}Övning \theovning}}%
+  \if\relax\detokenize{#1}\relax\else\ \textsf{(#1)}\fi\textsf{\textbf{.}}\enspace}{\par}
+\newenvironment{losning}{\par\vspace{0.2\baselineskip}\noindent\textsf{\textbf{Lösning.}}\enspace}{\par}

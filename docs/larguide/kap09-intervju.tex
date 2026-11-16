@@ -1,0 +1,399 @@
+\section{Intervjuförberedelse}
+\label{sec:intervju}
+
+Tekniska intervjufrågor på en investmentbank är förutsägbara. Det som skiljer kandidater är
+inte om de kan svaret utan om de kan ge det strukturerat på en minut. Varje svar nedan är
+skrivet för att kunna sägas högt på 60 till 90 sekunder: först rubriken, sedan stegen, sist en
+nyans som visar att du förstår. Frågorna står på engelska, som de ställs. Svaren står på
+svenska så att du lär dig innehållet och inte en ramsa, följda av de engelska fraser du ska
+kunna säga utan att tveka.
+
+\begin{intervjutips}
+Öva högt och med klocka. Börja varje svar med strukturen (”There are three steps”) och sluta
+när du är klar. Om du inte kan en sak: säg vad du vet och resonera dig fram. Gissa aldrig en
+siffra som om den vore säker.
+\end{intervjutips}
+
+\subsection{Redovisning}
+
+\begin{fraga}{Walk me through the three financial statements.}
+Resultaträkningen visar intäkter minus kostnader under en period och slutar i nettoresultatet.
+Balansräkningen visar tillgångar, skulder och eget kapital en viss dag, och tillgångarna är
+alltid lika med skulder plus eget kapital. Kassaflödesanalysen börjar med nettoresultatet,
+justerar för poster som inte är betalningar och för förändringar i rörelsekapital, lägger till
+investeringar och finansiering och slutar i periodens förändring av kassan. Kopplingarna:
+nettoresultatet går in i kassaflödet och i eget kapital, och kassaflödets slutrad blir kassan i
+balansräkningen.
+\fraser{Net income flows into retained earnings and is the starting point of the cash flow
+statement. The ending cash balance ties back to the balance sheet.}
+\end{fraga}
+
+\begin{fraga}{How does a 10 increase in depreciation affect the three statements?}
+Resultaträkningen: resultatet före skatt faller med 10. Med 20,6\pct{} skatt faller skatten med
+2,06 och nettoresultatet med 7,94. Kassaflödet: nettoresultatet är 7,94 lägre, men
+avskrivningen på 10 läggs tillbaka eftersom den inte är en utbetalning, så kassaflödet från
+rörelsen och kassan ökar med 2,06. Balansräkningen: anläggningstillgångarna minskar med 10 och
+kassan ökar med 2,06, alltså tillgångar $-7,94$. Eget kapital minskar med 7,94 genom det lägre
+resultatet. Det går ihop. Se tabell~\ref{tab:avskrivning}.
+\fraser{Depreciation is a non-cash expense, so cash actually goes up by the tax shield. Both
+sides of the balance sheet are down by 7.94, so it balances.}
+\end{fraga}
+
+\begin{fraga}{What is EBITDA, and why do bankers use it?}
+EBITDA är rörelseresultatet före avskrivningar, räntor och skatt. Det används som en grov
+approximation av rörelsens kassaflöde och för att jämföra bolag, eftersom det inte påverkas av
+skuldsättning, skattesituation eller avskrivningsprinciper. Svagheten är att det bortser från
+investeringar, rörelsekapital och skatt. Ett kapitalintensivt bolag kan ha hög EBITDA och ändå
+lågt fritt kassaflöde. Nyansen: sedan IFRS~16 ligger leasingkostnader under EBITDA, vilket
+lyfter måttet för bolag med mycket leasing.
+\fraser{It is a proxy for operating cash flow that is independent of capital structure. But it
+ignores capex, working capital and taxes.}
+\end{fraga}
+
+\begin{fraga}{What is the difference between unlevered and levered free cash flow?}
+Det obelånade kassaflödet, FCFF, tillhör alla finansiärer: EBIT efter skatt plus avskrivningar
+minus capex minus ökning av rörelsekapital. Det belånade, FCFE, är det som blir kvar till
+aktieägarna efter räntor och nettoupplåning. FCFF diskonteras med WACC och ger rörelsevärdet,
+FCFE med avkastningskravet på eget kapital och ger aktievärdet. I en vanlig DCF används FCFF,
+eftersom man då slipper prognostisera skuldsättningen.
+\fraser{Unlevered free cash flow is available to all capital providers and is discounted at the
+WACC. Levered free cash flow belongs to equity holders and is discounted at the cost of
+equity.}
+\end{fraga}
+
+\begin{fraga}{What is working capital, and how does a change in it affect cash flow?}
+Rörelsekapital är omsättningstillgångar minus kortfristiga rörelseskulder, i sin enklaste form
+kundfordringar plus lager minus leverantörsskulder. En ökning binder pengar och är ett
+kassautflöde: om lagret ökar med 10 har bolaget betalat 10 som ännu inte syns som kostnad.
+Växande bolag behöver därför normalt finansiera sitt rörelsekapital. Bolag som får betalt i
+förskott kan ha negativt rörelsekapital, och då frigör tillväxten pengar.
+\fraser{An increase in net working capital is a use of cash.}
+\end{fraga}
+
+\subsection{DCF och WACC}
+
+\begin{fraga}{Walk me through a DCF.}
+En DCF värderar ett bolag som nuvärdet av dess framtida kassaflöden. Fem steg. Ett: prognostisera
+det obelånade fria kassaflödet i fem till tio år. Två: beräkna WACC. Tre: beräkna ett slutvärde
+för tiden efter prognosen, med Gordons formel eller en exit-multipel. Fyra: diskontera
+kassaflödena och slutvärdet med WACC och summera till rörelsevärdet. Fem: dra av nettoskuld och
+minoritetsintressen för att få aktievärdet, och dela med antalet aktier. Avsluta med en
+känslighetsanalys på WACC och tillväxt, eftersom slutvärdet oftast är det mesta av värdet.
+\fraser{I project unlevered free cash flows, discount them at the WACC, add a terminal value,
+and bridge from enterprise value to equity value.}
+\end{fraga}
+
+\begin{fraga}{What is WACC and how do you calculate it?}
+WACC är det vägda avkastningskravet från alla som finansierar bolaget och används som
+diskonteringsränta för FCFF. Det är andelen eget kapital gånger avkastningskravet på eget
+kapital, plus andelen skuld gånger låneräntan efter skatt, se~\eqref{eq:wacc}. Vikterna är
+marknadsvärden. Avkastningskravet på eget kapital kommer från CAPM. Låneräntan multipliceras
+med ett minus skattesatsen eftersom räntan är avdragsgill. För Atlas Copco fick jag 7,65\pct:
+96\pct{} eget kapital till 7,84\pct{} och 4\pct{} skuld till 2,84\pct{} efter skatt.
+\fraser{Cost of equity times the equity weight, plus after-tax cost of debt times the debt
+weight, using market values.}
+\end{fraga}
+
+\begin{fraga}{How do you calculate the cost of equity?}
+Med CAPM: riskfri ränta plus beta gånger marknadens riskpremie. Den riskfria räntan är en lång
+statsobligation i samma valuta som kassaflödena, här den svenska tioåringen på 3,075\pct.
+Riskpremien är vad aktiemarknaden väntas ge utöver det. Jag använde Damodarans 4,23\pct{} för
+Sverige. Beta mäter aktiens känslighet för marknaden. Tanken är att investerare bara får
+betalt för risk som inte kan diversifieras bort. Nyansen: riskpremien går inte att observera,
+och ett annat källval ger ett annat värde.
+\fraser{Risk-free rate plus beta times the equity risk premium. Only systematic risk is
+compensated.}
+\end{fraga}
+
+\begin{fraga}{What is beta, and how do you unlever and relever it?}
+Beta är lutningen i en regression av aktiens avkastning på marknadens, kovariansen delat med
+marknadens varians. Ett observerat beta speglar både rörelsens risk och skuldsättningen. För
+att låna beta från jämförelsebolag rensar man därför först bort deras skuldsättning: beta delat
+med ett plus ett minus skattesatsen gånger skuld genom eget kapital. Man tar medianen och
+lägger sedan på målbolagets egen kapitalstruktur med samma formel baklänges,
+se~\eqref{eq:hamada}. Skälet att använda jämförelsebolag är att ett enskilt regressionsbeta är
+brusigt.
+\fraser{Unlevered beta equals levered beta divided by one plus one minus the tax rate times
+debt to equity. Then I relever at the target's capital structure.}
+\end{fraga}
+
+\begin{fraga}{How do you calculate terminal value, and which method do you prefer?}
+Två metoder. Gordons formel antar evig tillväxt: nästa års kassaflöde delat med WACC minus
+tillväxt. Exit-multipeln antar att bolaget säljs sista prognosåret till en multipel av EBITDA.
+Jag räknar alltid båda och stämmer av dem mot varandra: vilken multipel motsvarar min tillväxt,
+och vilken tillväxt motsvarar min multipel? I mitt case gav 2\pct{} tillväxt en multipel på
+11,7 gånger, medan jämförelsebolagens 19,4 gånger motsvarade 4,3\pct{} evig tillväxt. Den
+skillnaden var hela förklaringen till att metoderna inte var överens.
+\fraser{The perpetuity growth method and the exit multiple method. I cross-check one against the
+other through the implied multiple and the implied growth rate.}
+\end{fraga}
+
+\begin{fraga}{What is the mid-year convention?}
+En vanlig DCF diskonterar varje års kassaflöde som om det kom vid årets slut. I verkligheten
+kommer det löpande under året, i snitt vid halvårsskiftet. Halvårskonventionen diskonterar
+därför år $t$ med $t$ minus ett halvt år, vilket höjer värdet något. Det viktiga är
+slutvärdet: Gordon-värdet ska också justeras upp med ett halvt års ränta, medan ett slutvärde
+från en exit-multipel avser en försäljning vid årets slut och inte ska justeras.
+\fraser{Cash flows arrive evenly through the year, so I discount them at t minus one half. The
+exit multiple terminal value gets no mid-year adjustment.}
+\end{fraga}
+
+\begin{fraga}{What is the difference between enterprise value and equity value?}
+Rörelsevärdet är värdet av hela rörelsen för alla finansiärer, oavsett hur den är finansierad.
+Aktievärdet är det som tillhör aktieägarna. Bryggan: rörelsevärde minus nettoskuld, minus
+minoritetsintressen och preferensaktier, är aktievärde. Åt andra hållet: börsvärde plus
+nettoskuld är rörelsevärde. Rörelsevärdet används med mått före räntor, som EBITDA, och
+aktievärdet med mått efter räntor, som nettoresultat.
+\fraser{Enterprise value is the value of the operations to all investors. Equity value is what
+is left for shareholders after net debt and other claims.}
+\end{fraga}
+
+\begin{fraga}{Why do you subtract cash and add minority interest when you calculate enterprise value?}
+Kassan dras av eftersom den inte behövs i rörelsen: en köpare som betalar för aktierna får
+kassan med på köpet och kan använda den till att betala skulden. Minoritetsintressen läggs
+till eftersom koncernens EBITDA räknas till 100\pct{} även för dotterbolag som delvis ägs av
+andra. Täljaren måste då också innehålla hela värdet, annars jämför man äpplen med päron.
+\fraser{Cash is a non-operating asset. Minority interest is added for consistency, because
+consolidated EBITDA includes one hundred percent of the subsidiary.}
+\end{fraga}
+
+\begin{fraga}{Which has a bigger impact on a DCF: the discount rate or the growth rate?}
+Båda verkar genom samma nämnare, WACC minus tillväxt, så en procentenhet i den ena är ungefär
+lika mycket värd som en procentenhet i den andra för slutvärdet. Men WACC påverkar dessutom
+diskonteringen av alla kassaflöden, så WACC väger normalt något tyngre. Det avgörande är hur
+liten nämnaren är. I mitt case var den 5,65 procentenheter, och då sänker en procentenhet högre
+WACC slutvärdet med omkring 15\pct.
+\fraser{The value is driven by the spread between the WACC and the growth rate. The smaller the
+spread, the more sensitive the valuation.}
+\end{fraga}
+
+\begin{fraga}{Terminal value is 80 percent of your DCF. Is that a problem?}
+Det är normalt för ett moget bolag med fem års prognos, och i mitt case var andelen 76 till
+84\pct. Men det betyder att värderingen står och faller med två eller tre antaganden om tiden
+efter år fem. Jag hanterar det på tre sätt: stämmer av de två slutvärdesmetoderna mot varandra,
+visar en känslighetstabell, och räknar baklänges vad marknadspriset kräver. En längre
+prognosperiod minskar andelen men flyttar bara osäkerheten.
+\fraser{That is typical, and it is exactly why I sanity-check the implied multiple and run
+sensitivities.}
+\end{fraga}
+
+\begin{fraga}{Does more debt always lower the WACC?}
+Nej. Skuld är billigare än eget kapital och räntan är avdragsgill, så lite skuld sänker WACC.
+Men mer skuld gör aktien mer riskfylld: beta stiger enligt Hamada, och därmed avkastningskravet
+på eget kapital. Vid hög skuldsättning stiger också låneräntan och risken för finansiella
+problem. WACC är därför U-formad i skuldsättningen. Utan skatter och konkurskostnader tar
+effekterna ut varandra helt. Det är Modigliani och Millers resultat.
+\fraser{Debt is cheaper and tax-deductible, but it raises the cost of equity and eventually the
+cost of debt. There is an optimal capital structure.}
+\end{fraga}
+
+\subsection{Multiplar och metodval}
+
+\begin{fraga}{What are the main valuation methods, and which gives the highest value?}
+Tre huvudmetoder: DCF, som ger ett fristående värde ur kassaflödena, jämförelsebolag, som visar
+vad börsen betalar för liknande bolag, och jämförbara transaktioner \en{precedent transactions},
+som visar vad köpare har betalat för hela bolag. Därtill LBO-analys. Som tumregel ger
+transaktioner högst värde, eftersom priserna innehåller en kontrollpremie, och LBO lägst,
+eftersom en finansiell köpare kräver hög avkastning. DCF kan hamna var som helst beroende på
+antagandena. Mitt projekt har inte transaktionsmultiplar, eftersom det saknas gratis data.
+\fraser{DCF, trading comps and precedent transactions. Precedents usually come out highest
+because they include a control premium.}
+\end{fraga}
+
+\begin{fraga}{When would you use EV/EBITDA rather than P/E?}
+EV/EBITDA när jag vill jämföra rörelser oberoende av finansiering: måttet påverkas inte av
+skuldsättning, skatt eller avskrivningsprinciper, och det är standard för industribolag och i
+transaktioner. P/E när kapitalstrukturen är en del av verksamheten, framför allt banker och
+försäkringsbolag, där rörelsevärde och EBITDA inte är meningsfulla. P/E är också det mått
+aktieinvesterare oftast tittar på. Viktigast är att inte blanda: rörelsevärde hör ihop med
+resultat före räntor, börsvärde med resultat efter räntor.
+\fraser{EV/EBITDA is capital structure neutral. P/E is an equity multiple and is affected by
+leverage.}
+\end{fraga}
+
+\begin{fraga}{How do you select comparable companies?}
+Jag letar efter bolag med samma affärsmodell och samma drivkrafter: bransch och geografi först,
+sedan storlek, tillväxt, marginaler och risk. Hellre fem bra jämförelsebolag än femton
+dåliga. Sedan rensar jag uteliggare och tittar på median och kvartiler, inte medelvärde. I mitt
+projekt gjorde en algoritm urvalet inom sektorn, och det lärde mig var gränsen går: den
+hittade rimliga bolag men kan inte veta att två bolag med samma nyckeltal säljer helt olika
+saker.
+\fraser{Same industry and business model first, then size, growth, margins and risk. I use the
+median rather than the mean.}
+\end{fraga}
+
+\begin{fraga}{Why would two similar companies trade at different multiples?}
+En multipel är en hoptryckt DCF: den bestäms av tillväxt, risk och hur mycket av resultatet som
+blir kassaflöde, se~\eqref{eq:multipel-dcf}. Högre väntad tillväxt, lägre risk eller högre
+avkastning på kapitalet motiverar en högre multipel. Därutöver kan skillnaden vara teknisk:
+olika redovisning, engångsposter i resultatet eller olika perioder. Först när allt det är
+uteslutet kan man säga att ett av bolagen är felprissatt.
+\fraser{Differences in growth, risk and returns on capital. A multiple is shorthand for a DCF.}
+\end{fraga}
+
+\begin{fraga}{A company has negative earnings. How do you value it?}
+P/E fungerar inte, och är EBITDA också negativ faller EV/EBITDA bort. Då återstår
+omsättningsmultiplar, med reservationen att de bortser från lönsamheten, och en DCF med en
+uttalad väg till lönsamhet. En sådan DCF är mycket känslig för när och på vilken nivå
+marginalen stabiliseras. Min motor avstår helt från DCF vid negativ EBITDA, eftersom den bara
+kan skriva fram historiken, och det gällde 154 av 687 svenska bolag. Hellre det än ett tal
+utan mening.
+\fraser{I would look at revenue multiples and a DCF with an explicit path to profitability, and
+be clear about the uncertainty.}
+\end{fraga}
+
+\begin{fraga}{How would you value a bank?}
+Inte med en vanlig DCF. För en bank är skulden råvaran, inte finansieringen: inlåning och
+upplåning är en del av rörelsen, så rörelsevärde, EBITDA och FCFF saknar mening. Man värderar
+i stället det egna kapitalet direkt, med P/E och kurs mot eget kapital (P/B) ställt mot
+avkastningen på eget kapital, eller med en utdelningsmodell där utdelningarna diskonteras med
+avkastningskravet på eget kapital. Min motor ger banker bara P/E, och säger det öppet.
+\fraser{For a bank, debt is a raw material rather than a source of financing, so I use equity
+multiples like P/E and price to book, or a dividend discount model.}
+\end{fraga}
+
+\begin{fraga}{What is a football field chart?}
+Ett diagram med en liggande stapel per värderingsmetod som visar metodens intervall för värde
+per aktie, och en lodrät linje för aktuell kurs eller ett bud. Det används i pitchar och i
+underlag till styrelser för att visa var metoderna överlappar. Poängen är inte ett exakt tal
+utan ett försvarbart intervall. Man ska kunna förklara varje stapels ändpunkter och varför
+staplarna ligger där de gör.
+\fraser{It summarises the valuation ranges from each methodology side by side, against the
+current share price.}
+\end{fraga}
+
+\subsection{LBO}
+
+\begin{fraga}{Walk me through an LBO.}
+I en LBO köper ett riskkapitalbolag ett bolag med en stor andel lånade pengar. Stegen: ett,
+anta ett köppris, oftast som multipel av EBITDA. Två, bestäm finansieringen i en uppställning
+av källor och användning: lån i olika skikt och resten eget kapital. Tre, prognostisera
+kassaflödet och använd det till ränta och amortering. Fyra, anta en försäljning efter omkring
+fem år till en exit-multipel, dra av kvarvarande skuld och få ägarens likvid. Fem, räkna IRR
+och MOIC på ägarens insats. Ofta vänder man på det och löser ut det pris som ger ett visst
+avkastningskrav.
+\fraser{Purchase price, sources and uses, debt paydown from free cash flow, exit, and then the
+sponsor's IRR and multiple of money.}
+\end{fraga}
+
+\begin{fraga}{Why does an LBO use debt?}
+Hävstång. Skuld är billigare än eget kapital, och om bolaget är värt mer än skulden vid
+försäljningen tillfaller hela värdeökningen ägaren, som bara har satsat en del av köpeskillingen.
+Samma värdeökning på en mindre insats ger högre avkastning. Dessutom är räntan avdragsgill, och
+kravet att betala ränta tvingar fram disciplin i bolaget. Baksidan är risken: skulden ska
+betalas även om resultatet faller, och då är det ägarens kapital som försvinner först.
+\fraser{Leverage amplifies equity returns, and interest is tax-deductible. The trade-off is
+financial risk.}
+\end{fraga}
+
+\begin{fraga}{What drives returns in an LBO?}
+Tre saker. Resultattillväxt: bolaget säljs med högre EBITDA än det köptes med. Multipelexpansion:
+det säljs till en högre multipel än köpet. Amortering: bolagets kassaflöde betalar ned skulden,
+så en större del av rörelsevärdet tillhör ägaren. De tre summerar exakt till värdeskapandet
+efter avgifter, se~\eqref{eq:attribution}. Den mest pålitliga källan är amorteringen och den
+minst pålitliga multipeln. I mitt case köptes bolaget till 28 gånger EBITDA och såldes till 19,
+och multipelfallet åt upp allt annat.
+\fraser{EBITDA growth, multiple expansion and debt paydown.}
+\end{fraga}
+
+\begin{fraga}{What makes a good LBO candidate?}
+Ett bolag som klarar skuld: stabila och förutsägbara kassaflöden, låga investeringsbehov, lågt
+rörelsekapitalbehov, stark marknadsposition och låg befintlig skuldsättning. Det ska gå att
+köpa till en rimlig multipel, det ska finnas förbättringsmöjligheter i rörelsen, och det ska
+finnas en trolig väg ut om några år, till en industriell köpare, en annan fond eller börsen.
+Cykliska bolag och bolag med stora investeringsbehov passar sämre.
+\fraser{Stable cash flows, low capex requirements, a strong market position and a clear exit
+route.}
+\end{fraga}
+
+\begin{fraga}{What is the difference between IRR and MOIC?}
+MOIC är pengar ut delat med pengar in och bryr sig inte om tiden. IRR är den årliga avkastning
+som gör nuvärdet av alla ägarens kassaflöden till noll. Med en insats och en utbetalning är
+IRR lika med MOIC upphöjt till ett genom antalet år, minus ett. Dubbla pengarna är 26\pct{} om
+året på tre år men 15\pct{} på fem. En tidig utdelning höjer IRR utan att höja MOIC, och därför
+tittar investerare på båda.
+\fraser{MOIC tells you how much, IRR tells you how fast. Two times your money in five years is
+roughly a fifteen percent IRR.}
+\end{fraga}
+
+\begin{fraga}{What is the difference between senior and subordinated debt, and what is a cash sweep?}
+Seniora lån har förmånsrätt: de betalas först vid en konkurs och har ofta säkerhet i bolagets
+tillgångar. De har därför lägre ränta, amorteras löpande och har hårdare villkor. Efterställda
+lån står längre bak i kön, har högre ränta och betalas ofta i en klump vid förfall. Ett
+\en{cash sweep} betyder att överskottskassa, utöver den obligatoriska amorteringen, används
+till att betala det seniora lånet i förtid. Det sänker räntekostnaden och risken, och det
+ökar ägarens andel av värdet.
+\fraser{Senior debt ranks first and is cheaper. A cash sweep uses excess cash flow to prepay
+senior debt.}
+\end{fraga}
+
+\subsection{Omdöme}
+
+\begin{fraga}{Your DCF says 116 and the stock trades at 192. Who is right?}
+Det kan modellen inte avgöra, och jag skulle inte påstå det. Det den kan säga är vad kursen
+förutsätter. Jag räknade baklänges: kursen kräver ungefär 1,4 procentenheter lägre
+avkastningskrav och en procentenhet högre evig tillväxt än jag antog. Det är inte orimligt för
+ett kvalitetsbolag, och min modell är snål: den bromsar tillväxten till 2\pct{} redan år fem.
+Samtidigt såg jag samma mönster i hela universumet, där DCF:en värderar storbolag till 0,76
+av kursen i median. Det tyder på att gapet säger mer om modellens antaganden än om just det
+här bolaget.
+\fraser{A DCF does not tell you the price is wrong. It tells you what you need to believe for
+the price to be right.}
+\end{fraga}
+
+\subsection{Att presentera projektet på en minut}
+
+Du kommer att få frågan ”tell me about something you have built” eller ”walk me through a
+project on your CV”. Svaret ska vara på engelska, ta en minut och sluta i en insikt, inte i en
+lista över tekniker.
+
+\begin{tcolorbox}[enhanced,colback=accent!4,colframe=accent,boxrule=0.5pt,arc=2pt,
+  left=10pt,right=10pt,top=8pt,bottom=8pt,title={The pitch (about 60 seconds)},
+  fonttitle=\sffamily\bfseries\small,coltitle=white,colbacktitle=accent,
+  before upper={\setlength{\parskip}{0.5\baselineskip}}]
+\begin{english}
+I built a valuation engine in Python that values every
+Swedish listed company on Yahoo Finance, 687 of them, the way a bank would: a DCF with a
+CAPM-based WACC, trading comps, an LBO and a Monte Carlo simulation, summarised in a football
+field and exported to Excel.
+
+I then used it for a case study on Atlas Copco. The interesting result was not a price target
+but a disagreement. The DCF with two percent terminal growth gives about 116 kronor per share.
+Comps and the exit-multiple DCF give around 175. The stock trades at 192. I traced the gap to
+the terminal value: the peer multiple of 19 times EBITDA implies more than four percent growth
+forever. So the model cannot tell you who is right, but it shows exactly what the market price
+assumes.
+
+What I learned most from was where the mechanical approach breaks. For example, the clustering
+barely selects peers on its own, and the Monte Carlo range mostly reflects the volatilities I
+assumed.
+\end{english}
+\end{tcolorbox}
+
+\paragraph{Varför den fungerar.} Den börjar med vad projektet \emph{är} i en mening, med
+siffror som visar omfånget. Den går sedan till ett resultat som kräver förståelse (varför
+metoderna är oense), inte till en uppräkning av bibliotek. Och den slutar med svagheter som du
+själv har hittat. Det sista är det viktigaste: den som intervjuar har sett många DCF-modeller,
+men få kandidater som självmant säger var deras modell är svag.
+
+\paragraph{Följdfrågor du ska räkna med, och ärliga svar.}
+
+\begin{description}
+  \item[”Would you buy the stock?”] Nej, inte på det här underlaget. Modellen är ett läroexempel
+    på gratis data som inte är avstämda mot årsredovisningen. Den visar vad kursen kräver,
+    inte om kursen är fel.
+  \item[”Why k-means? Did it work?”] Bara delvis. Den valde två kluster, och 119 av 148
+    kandidater hamnade i samma som Atlas Copco. Urvalet görs i praktiken av närmaste grannar
+    inom sektorn med förtur för samma bransch. En analytiker hade valt för hand, och ABB hade
+    troligen kommit med.
+  \item[”Where does your size premium come from?”] Det är ett eget antagande, inte skattat ur
+    data och inte källbelagt. Det finns där för att regressionsbeta för illikvida småbolag blir
+    för låg. Det går att stänga av, och i caset är premien noll.
+  \item[”What does the Monte Carlo actually tell you?”] Hur känslig modellen är för sina egna
+    indata. Bredden bestäms av standardavvikelser som jag har antagit, och tillväxtens bygger
+    på tre observationer. Att 3,3\pct{} av dragningarna ligger över kursen är ingen sannolikhet
+    för att aktien är undervärderad.
+  \item[”What would you do next?”] Rullande tolvmånaderssiffror i stället för senaste bokslut,
+    en stubbperiod, justering för leasing, kurs mot eget kapital för banker och fastighetsbolag,
+    transaktionsmultiplar, och framför allt en avstämning av indata mot bolagens egna rapporter.
+\end{description}

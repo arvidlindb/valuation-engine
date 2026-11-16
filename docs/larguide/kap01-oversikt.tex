@@ -1,0 +1,114 @@
+\section{Översikt: vad en investmentbank gör och var värdering kommer in}
+\label{sec:oversikt}
+
+Du kan redan räkna. Det du behöver lära dig är vad som ska räknas, varför, och hur man pratar om
+det. Den här guiden går igenom de fyra värderingsmetoder som en junior på en investmentbank
+förväntas kunna, och den gör det med ett riktigt program som facit: \kod{valuation-engine}, som
+värderar alla svenska bolag på Yahoo Finance. Varje påstående om vad programmet gör är
+kontrollerat mot koden, och alla tal om Atlas Copco kommer från en och samma körning.
+
+\subsection{Vad en investmentbank gör}
+
+En investmentbank \eng{investment bank} tjänar pengar på rådgivning och kapitalanskaffning, inte
+på in- och utlåning. Verksamheten brukar delas upp så här:
+
+\begin{description}
+  \item[Företagsaffärer] \eng{mergers and acquisitions, M\&A}. Banken ger råd till den som säljer
+    ett bolag (säljuppdrag, \en{sell-side}) eller den som köper (köpuppdrag, \en{buy-side}).
+    Arvodet är oftast en andel av affärens värde.
+  \item[Aktiemarknad] \eng{equity capital markets, ECM}. Börsintroduktioner \eng{initial public
+    offering, IPO} och nyemissioner.
+  \item[Skuldmarknad] \eng{debt capital markets, DCM}. Obligationer och lån, bland annat
+    finansieringen av lånefinansierade uppköp \eng{leveraged finance}.
+\end{description}
+
+Som analytiker \eng{analyst}, den första rollen efter examen, bygger du modeller i Excel och
+sidor i PowerPoint. Nästan allt du gör vilar på en fråga: \emph{vad är bolaget värt, och varför?}
+
+\subsection{Var värderingen används}
+
+\begin{description}
+  \item[Pitch.] Banken försöker vinna ett uppdrag och visar i en presentation \eng{pitch book} vad
+    den tror att bolaget är värt. Slutbilden är ofta ett diagram med ett värdeintervall per
+    metod, en så kallad \en{football field} (figur~\ref{fig:football} på
+    sidan~\pageref{fig:football}).
+  \item[Fairness opinion.] Ett skriftligt utlåtande till en styrelse om att ett bud är skäligt ur
+    finansiell synvinkel. Här ska varje antagande tåla granskning.
+  \item[M\&A.] Köparen vill veta vad den högst kan betala, säljaren vad den minst bör godta.
+    Diskonterade kassaflöden ger ett fristående värde, jämförelsebolag visar vad marknaden
+    betalar i dag.
+  \item[LBO.] När köparen är ett riskkapitalbolag \eng{private equity} räknar man baklänges: vilket
+    pris ger ägaren den avkastning den kräver? Det priset fungerar ofta som ett golv i
+    budgivningen, eftersom en finansiell köpare saknar synergier.
+\end{description}
+
+Ingen metod ger ett sant värde. Poängen med att använda flera är att se \emph{var} de skiljer sig
+och kunna förklara varför. Det är också vad kapitel~\ref{sec:case} handlar om: metoderna säger
+116 till 178\kr{} per aktie för Atlas Copco när kursen är 192,25\kr, och det intressanta är
+förklaringen.
+
+\subsection{Projektet mot verkligheten}
+
+Tabell~\ref{tab:mappning} visar vad varje del av projektet motsvarar på en bank, och var
+projektet förenklar. Läs högerkolumnen noga: det är de sakerna en intervjuare frågar om.
+
+\begin{table}[ht]
+\centering\small
+\caption{Projektets delar och vad de motsvarar i arbetet på en bank.}
+\label{tab:mappning}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+Del av projektet & Motsvarar på banken & Viktigaste förenklingen \\
+\midrule
+\kod{data/} & Att hämta bokslut och kurser ur årsredovisningar och betalda databaser och
+  justera dem för hand & Gratis data från Yahoo Finance, mekanisk mappning, senaste räkenskapsår
+  i stället för rullande tolv månader \\
+\kod{models/dcf.py} & DCF-modellen i Excel & Prognosen räknas mekaniskt ur tre till fyra års
+  historik, ingen analytiker har läst bolagets rapporter \\
+\kod{models/comps.py} & Jämförelsebolagsanalys \eng{trading comps} & Jämförelsebolagen väljs
+  av en algoritm, inte av någon som kan branschen \\
+\kod{models/lbo.py} & LBO-modellen & Årsmodell med två lånetrancher och schablonvillkor \\
+\kod{models/monte_carlo.py} & Känslighetsanalysen. Banker visar oftast tabeller, simulering är
+  ovanligare i pitchmaterial & Fyra drivare, antagna standardavvikelser \\
+\kod{viz/} & Diagrammen i presentationen & Samma diagram för alla bolag \\
+\kod{export/excel.py} & Själva modellen, som på en bank lever i Excel & En export med
+  färdiga tal, bara ett fåtal levande formler \\
+\kod{batch.py} & Screening av många bolag & Ingen manuell kontroll per bolag \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{komihag}
+Motorn är konsekvent, inte klok. Den gör samma sak med alla 687 bolag och kraschar inte, men
+den vet ingenting om bolagen. Det du ska lära dig av den är mekaniken och var omdömet behövs.
+\end{komihag}
+
+\subsection{Beteckningar}
+
+Samma symboler används i hela guiden. Belopp anges i miljarder kronor (mdkr) om inget annat
+sägs, och räntor som decimaltal i formler och procent i text.
+
+\begin{table}[ht]
+\centering\small
+\caption{Beteckningar.}
+\label{tab:beteckningar}
+\begin{tabularx}{\linewidth}{@{}lX@{\hspace{1.5em}}lX@{}}
+\toprule
+Symbol & Betydelse & Symbol & Betydelse \\
+\midrule
+$t$ & år, $t = 1, \dots, N$ & $r$ & diskonteringsränta, i DCF lika med $\WACC$ \\
+$N$ & antal prognosår (5 i motorn) & $g$ & evig tillväxt \eng{terminal growth} \\
+$R_t$ & omsättning år $t$ & $r_f$ & riskfri ränta \\
+$m$ & EBITDA-marginal & $\ERP$ & aktiemarknadens riskpremie \\
+$d$, $c$ & avskrivningar respektive capex som andel av omsättningen & $\beta_L$, $\beta_U$ &
+  beta med respektive utan skuldsättning \\
+$\nu$ & rörelsekapital som andel av omsättningen & $r_e$, $r_d$ & avkastningskrav på eget
+  kapital respektive låneränta före skatt \\
+$\tau$ & skattesats (20,6\pct{} i projektet) & $E$, $D$ & marknadsvärde på eget kapital
+  respektive skuld \\
+$\FCFF_t$ & fritt kassaflöde till alla finansiärer & $\TV_N$ & slutvärde vid utgången av år
+  $N$ \\
+$\EV$ & rörelsevärde \eng{enterprise value} & $M$ & multipel, till exempel $\EV/\EBITDA$ \\
+\bottomrule
+\end{tabularx}
+\end{table}

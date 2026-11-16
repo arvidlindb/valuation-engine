@@ -1,0 +1,190 @@
+\section{Redovisningen du behöver}
+\label{sec:redovisning}
+
+Värdering börjar i bokslutet. Du behöver inte kunna bokföra, men du måste kunna läsa de tre
+rapporterna och veta hur en ändring i en av dem slår igenom i de andra två. Talen i exemplen är
+Atlas Copcos för 2025 så som datalagret levererar dem, i mdkr.
+
+\subsection{De tre rapporterna}
+
+\begin{description}
+  \item[Resultaträkningen] \eng{income statement} visar intäkter och kostnader under ett år.
+    Den är periodiserad: en kostnad tas när resursen förbrukas, inte när den betalas.
+  \item[Balansräkningen] \eng{balance sheet} visar vad bolaget äger och hur det är finansierat
+    en viss dag. Den ska alltid gå ihop:
+    $\text{tillgångar} = \text{skulder} + \text{eget kapital}$.
+  \item[Kassaflödesanalysen] \eng{cash flow statement} visar vart pengarna faktiskt tog vägen
+    under året, uppdelat på löpande verksamhet, investeringar och finansiering.
+\end{description}
+
+\begin{table}[ht]
+\centering\small
+\caption{Resultaträkningens trappa, Atlas Copco 2025 (mdkr). Källa: projektets datalager.}
+\label{tab:rr}
+\begin{tabular}{@{}llr@{}}
+\toprule
+Rad & Engelska & 2025 \\
+\midrule
+Omsättning & \en{revenue}, \en{sales} & 168,3 \\
+$-$ Kostnad för sålda varor & \en{cost of goods sold, COGS} & 96,1 \\
+$=$ Bruttoresultat & \en{gross profit} & 72,2 \\
+$-$ Övriga rörelsekostnader (före avskrivningar) & \en{operating expenses} & 28,1 \\
+$=$ \textbf{EBITDA} & & 44,1 \\
+$-$ Avskrivningar & \en{depreciation and amortization, D\&A} & 9,5 \\
+$=$ \textbf{EBIT}, rörelseresultat & \en{operating income} & 34,6 \\
+$-$ Räntekostnader & \en{interest expense} & 0,9 \\
+$=$ Resultat före skatt & \en{pretax income, EBT} & 33,7 \\
+$-$ Skatt & \en{income tax} & 7,2 \\
+$=$ Nettoresultat & \en{net income} & 26,4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Balansräkningen samma år: tillgångar 202,5, skulder 92,1, eget kapital hänförligt till
+aktieägarna 110,2 och minoritetens andel 0,2. Kassaflödet från den löpande verksamheten var
+32,6, investeringarna i anläggningar (capex) 6,2 och utdelningen 14,6.
+
+\paragraph{Hur de hänger ihop.} Figur~\ref{fig:tre-rapporter} visar kopplingarna. Lär dig dem som
+en kedja:
+
+\begin{enumerate}
+  \item Nettoresultatet är första raden i kassaflödesanalysen och ökar det egna kapitalet
+    (balanserade vinstmedel, \en{retained earnings}), minus utdelning.
+  \item Avskrivningar är en kostnad utan utbetalning. De läggs tillbaka i kassaflödet och minskar
+    anläggningstillgångarna i balansräkningen.
+  \item Investeringar (capex) syns inte i resultaträkningen. De är ett utflöde i kassaflödet och
+    ökar anläggningstillgångarna.
+  \item Ökat rörelsekapital binder pengar: ett utflöde i kassaflödet, en ökning av
+    omsättningstillgångarna i balansräkningen.
+  \item Summan av de tre kassaflödena är årets förändring av kassan, som är en rad i
+    balansräkningen. Där sluts cirkeln.
+\end{enumerate}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\small\sffamily,
+  box/.style={draw=accent,rounded corners=2pt,align=left,inner sep=5pt,text width=3.9cm,
+              fill=accent!4},
+  head/.style={font=\small\sffamily\bfseries,text=accent},
+  link/.style={-{Stealth[length=5pt]},thick,draw=black!60},
+  lbl/.style={font=\footnotesize\sffamily,fill=white,inner sep=1.5pt,text=black!75}]
+  \node[box] (rr) {\textbf{Resultaträkning}\\ Omsättning\\ EBITDA\\ $-$ Avskrivningar\\ EBIT\\
+    $-$ Ränta, skatt\\ \textbf{Nettoresultat}};
+  \node[box,right=1.5cm of rr] (kf) {\textbf{Kassaflödesanalys}\\ Nettoresultat\\
+    $+$ Avskrivningar\\ $-$ Ökning rörelsekapital\\ $-$ Capex\\ $\pm$ Lån, utdelning\\
+    \textbf{Förändring av kassa}};
+  \node[box,right=1.5cm of kf] (br) {\textbf{Balansräkning}\\ Kassa\\ Rörelsekapital\\
+    Anläggningstillgångar\\ Skulder\\ Eget kapital\\ \emph{(tillgångar = skulder + EK)}};
+  \draw[link] (rr.east) to node[lbl,above=1pt] {resultat} (kf.west);
+  \draw[link] (kf.east) to node[lbl,above=1pt] {kassa} (br.west);
+  \draw[link] (rr.south) to[out=-90,in=-90,looseness=0.42]
+    node[lbl,pos=0.5] {nettoresultat ökar eget kapital, avskrivningar minskar anläggningstillgångar}
+    (br.south);
+\end{tikzpicture}
+\caption{De tre rapporterna och hur de hänger ihop.}
+\label{fig:tre-rapporter}
+\end{figure}
+
+\subsection{EBITDA}
+
+EBITDA \eng{earnings before interest, taxes, depreciation and amortization} är rörelseresultatet
+före avskrivningar. Måttet är populärt av tre skäl. Det påverkas inte av hur bolaget är
+finansierat (räntan ligger längre ned), inte av avskrivningsprinciper, och det är en grov
+approximation av kassaflödet från rörelsen före investeringar.
+
+\begin{vanligtfel}
+Att behandla EBITDA som kassaflöde. EBITDA tar inte hänsyn till investeringar, bundet
+rörelsekapital eller skatt. Två bolag med samma EBITDA kan ha helt olika fritt kassaflöde.
+Sedan redovisningsregeln IFRS~16 ligger dessutom hyreskostnader för leasade tillgångar som
+avskrivning och ränta, alltså \emph{under} EBITDA. Motorn justerar inte för det, och
+kassaflödena under prognosåren blir därför något för höga för bolag med mycket leasing.
+\end{vanligtfel}
+
+\subsection{Rörelsekapital}
+
+Rörelsekapital \eng{net working capital, NWC} är de pengar som är bundna i den dagliga
+verksamheten. Motorn använder den smala, operativa definitionen:
+\begin{equation}
+  \NWC = \text{kundfordringar} + \text{lager} - \text{leverantörsskulder}.
+  \label{eq:nwc}
+\end{equation}
+För Atlas Copco 2025: $29,9 + 26,7 - 16,4 = 40,2$~mdkr, eller 23,9\pct{} av omsättningen. När
+bolaget växer måste rörelsekapitalet växa med, och den ökningen är ett kassautflöde. I prognosen
+antar motorn att rörelsekapitalet är en fast andel $\nu$ av omsättningen, så att
+$\Delta\NWC_t = \nu\,(R_t - R_{t-1})$. Ett bolag som får betalt i förskott kan ha negativt
+rörelsekapital, och då \emph{frigör} tillväxt pengar.
+
+\subsection{Fritt kassaflöde: FCFF och FCFE}
+
+Fritt kassaflöde är det som blir över när rörelsen har fått sitt. Det finns två varianter, och
+skillnaden är vem pengarna tillhör.
+
+\begin{description}
+  \item[FCFF] \eng{free cash flow to the firm, unlevered free cash flow} är kassaflödet till
+    \emph{alla} finansiärer, långivare och aktieägare, före räntor:
+    \begin{equation}
+      \FCFF = {\underbrace{\EBIT\,(1-\tau)}_{\NOPAT}} + \text{avskrivningar} - \text{capex}
+              - \Delta\NWC .
+      \label{eq:fcff}
+    \end{equation}
+    Skatten räknas som om bolaget saknade skuld. Värdet av ränteavdraget kommer i stället in via
+    diskonteringsräntan (avsnitt~\ref{sec:wacc}).
+  \item[FCFE] \eng{free cash flow to equity, levered free cash flow} är det som blir kvar till
+    aktieägarna sedan långivarna fått sitt:
+    \begin{equation}
+      \FCFE = \FCFF - \text{ränta}\,(1-\tau) + \text{nettoupplåning}.
+      \label{eq:fcfe}
+    \end{equation}
+\end{description}
+
+Regeln är att kassaflöde och diskonteringsränta måste höra ihop. FCFF diskonteras med WACC och
+ger rörelsevärdet. FCFE diskonteras med avkastningskravet på eget kapital och ger aktievärdet
+direkt. Motorn räknar bara med FCFF, vilket också är standard på en bank, eftersom man då inte
+behöver prognostisera skuldsättningen år för år.
+
+\paragraph{Exempel.} Motorns första prognosår för Atlas Copco (2026): EBITDA 47,10 och
+avskrivningar 9,00 ger EBIT 38,11. Skatt 20,6\pct{} på det är 7,85, så $\NOPAT = 30,26$. Capex är
+6,09 och rörelsekapitalet ökar med 2,54. Enligt~\eqref{eq:fcff}:
+$\FCFF = 30,26 + 9,00 - 6,09 - 2,54 \approx 30,6$~mdkr.
+
+\subsection{Klassikern: avskrivningarna ökar med 10 kronor}
+\label{sec:avskrivning10}
+
+Frågan kommer i nästan varje intervju, och den testar om du kan kedjan ovan. Gå alltid i
+ordningen resultaträkning, kassaflöde, balansräkning, och avsluta med att visa att
+balansräkningen går ihop. Med projektets skattesats 20,6\pct:
+
+\begin{table}[H]
+\centering\small
+\caption{Avskrivningarna ökar med 10\kr. Skattesats 20,6\pct.}
+\label{tab:avskrivning}
+\begin{tabular}{@{}llr@{}}
+\toprule
+Rapport & Rad & Förändring \\
+\midrule
+Resultaträkning & Resultat före skatt & $-10,00$ \\
+                & Skatt ($20,6\,\%$ av $-10$) & $+2,06$ \\
+                & Nettoresultat & $-7,94$ \\
+\addlinespace
+Kassaflödesanalys & Nettoresultat & $-7,94$ \\
+                  & Återlagd avskrivning (ingen utbetalning) & $+10,00$ \\
+                  & Kassaflöde från rörelsen, och därmed kassan & $+2,06$ \\
+\addlinespace
+Balansräkning & Anläggningstillgångar & $-10,00$ \\
+              & Kassa & $+2,06$ \\
+              & Summa tillgångar & $-7,94$ \\
+              & Eget kapital (balanserat resultat) & $-7,94$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Kassan \emph{ökar} alltså, fast vinsten minskar. Avskrivningen är ingen utbetalning, men den
+sänker skatten med $0,206 \cdot 10 = 2,06$\kr. Det kallas avskrivningarnas skattesköld
+\eng{depreciation tax shield}.
+
+\begin{intervjutips}
+Säg skattesatsen högt innan du börjar räkna (”I'll assume a 20.6 percent tax rate, the Swedish
+corporate rate”) och avsluta med ”and the balance sheet balances”. Amerikanska läroböcker räknar
+ofta med 40 eller 25\pct. Metoden är densamma, och med 20\pct{} blir huvudräkningen enkel:
+$-8$, $+2$, $-8$.
+\end{intervjutips}

@@ -1,0 +1,63 @@
+% Lärguide till valuation-engine.
+% Bygg: ./build.sh   (kräver tectonic)
+\documentclass[10pt,a4paper,titlepage=true]{scrartcl}
+\input{preamble}
+
+\hypersetup{
+  pdftitle={Värdering i praktiken: lärguide till valuation-engine},
+  pdfauthor={valuation-engine},
+  pdfsubject={DCF, multipelvärdering, LBO och Monte Carlo på svenska börsbolag},
+  pdflang={sv}}
+
+\begin{document}
+% Hyphenation exceptions (set here so that they apply to Swedish, the document language).
+\hyphenation{EBITDA EBIT WACC NOPAT FCFF FCFE MOIC Yahoo aktie-ägare aktie-ägarna
+  aktie-ägarnas lån-givare lån-givarna åter-investerar ut-låning där-utöver}
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \vspace*{3.2cm}
+  {\color{accent}\rule{\linewidth}{2.2pt}}\par
+  \vspace{0.9cm}
+  {\sffamily\bfseries\color{accent}\fontsize{32}{38}\selectfont Värdering i praktiken\par}
+  \vspace{0.6cm}
+  {\sffamily\fontsize{15}{20}\selectfont\color{black!75}
+   Lärguide till \texttt{valuation-engine}: DCF, multiplar, LBO och Monte Carlo\\
+   på svenska börsbolag, med Atlas Copco som genomgående exempel\par}
+  \vspace{0.9cm}
+  {\color{accent}\rule{\linewidth}{0.6pt}}\par
+  \vspace{1.2cm}
+  {\large För dig som kan matematiken men är ny på företagsvärdering\\
+   och siktar på investment banking.\par}
+  \vfill
+  {\sffamily\large valuation-engine\par}
+  \vspace{0.2cm}
+  {\sffamily 16 november 2026\par}
+  \vspace{1.2cm}
+  {\small\color{black!65} Guiden är ett läromedel och ingen investeringsrådgivning. Alla tal om
+   Atlas Copco kommer från projektets egen körning på data från Yahoo Finance (kurs per den
+   13 november 2026, bokslut 2025) och är inte avstämda mot bolagets årsredovisning.\par}
+\end{titlepage}
+
+\pdfbookmark[1]{Innehåll}{toc}
+\section*{Innehåll}
+\begingroup
+  \small\setlength{\columnsep}{2.2em}\setlength{\parskip}{0pt}
+  \begin{multicols}{2}
+    \makeatletter\@starttoc{toc}\makeatother
+  \end{multicols}
+\endgroup
+\clearpage
+
+\input{kap01-oversikt}
+\input{kap02-redovisning}
+\input{kap03-dcf}
+\input{kap04-multiplar}
+\input{kap05-lbo}
+\input{kap06-montecarlo}
+\input{kap07-kod}
+\input{kap08-case}
+\input{kap09-intervju}
+\input{kap10-appendix}
+
+\end{document}

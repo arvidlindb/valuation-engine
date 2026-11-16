@@ -1,0 +1,321 @@
+\section{Appendix: övningar och ordlista}
+\label{sec:appendix}
+
+\subsection{Övningar med lösningar}
+
+Övningarna följer kapitlen. De flesta löser du med penna och papper, några genom att köra
+motorn. Kommandona förutsätter att du står i repots rot med den virtuella miljön aktiverad.
+Alla körs offline och ger därför exakt de tal som står i lösningarna.
+
+\subsubsection*{Redovisning}
+
+\begin{ovning}[penna och papper]
+Ett bolag köper en maskin för 100\kr{} kontant den 1 januari och skriver av den linjärt på
+fem år. Skattesatsen är 20,6\pct. Hur påverkas de tre rapporterna det första året?
+\end{ovning}
+\begin{losning}
+Avskrivningen är 20. Resultaträkning: resultat före skatt $-20$, skatt $+4,12$, nettoresultat
+$-15,88$. Kassaflöde: rörelsen $-15,88 + 20 = +4,12$, investeringar $-100$, kassan $-95,88$.
+Balansräkning: anläggningstillgångar $+100 - 20 = +80$, kassa $-95,88$, alltså tillgångar
+$-15,88$, och eget kapital $-15,88$. Det går ihop. Lägg märke till att själva köpet inte syns
+i resultaträkningen.
+\end{losning}
+
+\begin{ovning}[penna och papper]
+Ett bolag har EBIT 200, avskrivningar 50, capex 70, en ökning av rörelsekapitalet på 10,
+räntekostnader 30 och ökar sina lån med 20 netto. Skattesatsen är 20,6\pct. Beräkna FCFF och
+FCFE.
+\end{ovning}
+\begin{losning}
+Enligt~\eqref{eq:fcff}: $\FCFF = 200 \cdot 0,794 + 50 - 70 - 10 = 128,8$.
+Enligt~\eqref{eq:fcfe}: $\FCFE = 128,8 - 30 \cdot 0,794 + 20 = 125,0$.
+\end{losning}
+
+\subsubsection*{DCF}
+
+\begin{ovning}[penna och papper]
+Nästa års kassaflöde är 100, WACC 8\pct{} och evig tillväxt 2\pct. (a) Beräkna slutvärdet. (b)
+Hur ändras det om $g$ är 3\pct, respektive om WACC är 9\pct? (c) Hur stor del av värdet kommer
+från kassaflöden mer än 20 år bort?
+\end{ovning}
+\begin{losning}
+(a) $100 / 0,06 = 1\,667$. (b) $100 / 0,05 = 2\,000$, alltså $+20$\pct, respektive
+$100 / 0,07 = 1\,429$, alltså $-14$\pct. (c) Summan av termerna efter de $n$ första i den
+geometriska serien~\eqref{eq:gordon} är andelen $q^n$ av helheten, med
+$q = 1,02 / 1,08 = 0,944$. För $n = 20$ blir det $0,944^{20} = 0,32$. En tredjedel av
+slutvärdet kommer alltså från år som ligger mer än två decennier efter prognosens slut.
+\end{losning}
+
+\begin{ovning}[penna och papper]
+Ett bolag ger kassaflödet 100 om året i tre år. Därefter växer kassaflödet med 2\pct{} om året
+för alltid, med början på 102 år fyra. WACC är 10\pct. Beräkna rörelsevärdet (a) med
+årsslutskonvention och (b) med halvårskonvention. (c) Vad är kvoten mellan svaren, och varför?
+\end{ovning}
+\begin{losning}
+(a) Prognosåren: $100\,(1,1^{-1} + 1,1^{-2} + 1,1^{-3}) = 248,7$. Slutvärde:
+$102 / 0,08 = 1\,275$, nuvärde $1\,275 / 1,1^3 = 957,9$. Summa $1\,206,6$. (b) Prognosåren:
+$100\,(1,1^{-0,5} + 1,1^{-1,5} + 1,1^{-2,5}) = 260,8$. Slutvärdet får faktorn $1,1^{0,5}$:
+$1\,275 \cdot 1,0488 / 1,1^3 = 1\,004,7$. Summa $1\,265,5$. (c) Kvoten är $1,0488 = 1,1^{0,5}$.
+Med Gordon-slutvärde flyttar halvårskonventionen \emph{alla} kassaflöden ett halvår närmare,
+så hela värdet multipliceras med $(1+r)^{1/2}$. Med exit-multipel gäller det bara prognosåren.
+\end{losning}
+
+\begin{ovning}[kör motorn]
+Stäng av capex-golvet i slutåret för Atlas Copco. Vad blir Gordon-värdet och den implicita
+multipeln? Kontrollera kassaflödet år $N+1$ för hand med~\eqref{eq:terminal-fcff}.
+\begin{lstlisting}
+from valuation_engine.pipeline import run_valuation
+from valuation_engine.models import dcf
+
+d = run_valuation("ATCO-A.ST", offline=True).dcf
+out = dcf.dcf_core(**{**d.core_inputs, "terminal_capex_floor": False})
+print(out.value_per_share_gordon[0], out.implied_exit_multiple[0], out.terminal_fcff[0] / 1e9)
+\end{lstlisting}
+\end{ovning}
+\begin{losning}
+Utskriften är 124,69\kr{} per aktie, multipeln 12,8 och kassaflödet 37,78~mdkr (mot 115,85,
+11,7 och 34,38 med golvet). För hand: utan golv är
+$u = 0,2135 \cdot 0,794 + 0,0504 - 0,0341 = 0,1859$ och
+$\FCFF_{N+1} = 204,7 \cdot (1,02 \cdot 0,1859 - 0,2516 \cdot 0,02) = 37,8$. Golvet kostar
+alltså ungefär 9\kr{} per aktie.
+\end{losning}
+
+\subsubsection*{WACC och beta}
+
+\begin{ovning}[penna och papper]
+Ett bolag har börsvärde 800 och skuld 200. Beta är 1,2, den riskfria räntan 3,075\pct,
+riskpremien 4,23\pct, låneräntan 5\pct{} och skattesatsen 20,6\pct. Beräkna WACC.
+\end{ovning}
+\begin{losning}
+$r_e = 3,075 + 1,2 \cdot 4,23 = 8,15$\pct. Låneränta efter skatt: $5 \cdot 0,794 = 3,97$\pct.
+$\WACC = 0,8 \cdot 8,15 + 0,2 \cdot 3,97 = 7,31$\pct.
+\end{losning}
+
+\begin{ovning}[penna och papper]
+Fyra veckors avkastning i procent för marknaden: $2, -1, 3, 0$. För aktien:
+$3, -2, 4, -1$. Skatta beta med~\eqref{eq:beta}, Blume-justera, och beräkna $R^2$.
+\end{ovning}
+\begin{losning}
+Båda medelvärdena är 1. Avvikelserna är $(1, -2, 2, -1)$ för marknaden och $(2, -3, 3, -2)$
+för aktien. Summan av produkterna är $2 + 6 + 6 + 2 = 16$ och marknadens kvadratsumma
+$1 + 4 + 4 + 1 = 10$, så $\hat\beta = 16/10 = 1,6$. (Nämnaren $n - 1$ förkortas bort.)
+Blume: $\tfrac23 \cdot 1,6 + \tfrac13 = 1,4$. Aktiens kvadratsumma är 26, så
+$R^2 = 16^2 / (10 \cdot 26) = 0,98$. Fyra observationer är naturligtvis alldeles för få. Motorn
+kräver 52.
+\end{losning}
+
+\begin{ovning}[penna och papper]
+Ett jämförelsebolag har beta 1,3 och $D/E = 0,5$. Målbolaget har $D/E = 0,2$. Skattesatsen är
+20,6\pct. Beräkna målbolagets beta med~\eqref{eq:hamada} och Blume-justera det, som motorn gör.
+\end{ovning}
+\begin{losning}
+Utan skuld: $\beta_U = 1,3 / (1 + 0,794 \cdot 0,5) = 0,93$. Med målbolagets skuld:
+$\beta_L = 0,93 \cdot (1 + 0,794 \cdot 0,2) = 1,08$. Blume:
+$\tfrac23 \cdot 1,08 + \tfrac13 = 1,05$.
+\end{losning}
+
+\subsubsection*{Multiplar och klustring}
+
+\begin{ovning}[penna och papper]
+Fem jämförelsebolag handlas till 8, 9, 10, 12 och 14 gånger EBITDA. Målbolaget har EBITDA 500,
+nettoskuld 800 och 100 aktier. (a) Beräkna lågt, bas och högt värde per aktie som motorn gör.
+(b) Vilken evig tillväxt motsvarar medianmultipeln enligt~\eqref{eq:multipel-dcf} om
+kassakonverteringen är 0,6 och WACC 8\pct?
+\end{ovning}
+\begin{losning}
+(a) 25:e percentilen, medianen och 75:e percentilen är 9, 10 och 12. Rörelsevärde 4\,500,
+5\,000 och 6\,000. Minus nettoskuld: 3\,700, 4\,200 och 5\,200. Per aktie: 37, 42 och 52\kr.
+(b) $10 = 0,6 / (0,08 - g)$ ger $g = 2$\pct.
+\end{losning}
+
+\begin{ovning}[penna och papper]
+Fem bolag har z-värdena 1, 2, 3, 8 och 9 i en enda variabel. Kör Lloyds algoritm med $k = 2$
+från startpunkterna $\mu_1 = 1$ och $\mu_2 = 4$. Beräkna sedan $J$ och silhuettvärdet för
+punkten 3.
+\end{ovning}
+\begin{losning}
+Varv 1: punkterna 1 och 2 går till $\mu_1$, punkterna 3, 8 och 9 till $\mu_2$. Nya
+medelpunkter: 1,5 och 6,67. Varv 2: punkten 3 ligger nu närmare 1,5 (avstånd 1,5 mot 3,67) och
+byter kluster. Nya medelpunkter: 2 och 8,5. Varv 3: ingen punkt byter, algoritmen är klar med
+klustren $\{1, 2, 3\}$ och $\{8, 9\}$. $J = (1 + 0 + 1) + (0,25 + 0,25) = 2,5$. För punkten 3:
+$a = (2 + 1)/2 = 1,5$ och $b = (5 + 6)/2 = 5,5$, så $s = (5,5 - 1,5)/5,5 = 0,73$.
+Medelvärdet över alla fem punkter är 0,81, en tydlig struktur. Jämför med 0,38 i
+figur~\ref{fig:silhuett}.
+\end{losning}
+
+\begin{ovning}[kör motorn]
+Värdera Sandvik, som också ligger bland fixtures. Vilket $k$ väljs, är Atlas Copco bland
+jämförelsebolagen, och varför är exit-multipeln exakt 20,0?
+\begin{lstlisting}[style=sh]
+python -m valuation_engine SAND.ST --offline --no-charts --no-excel
+\end{lstlisting}
+\end{ovning}
+\begin{losning}
+Även här väljs $k = 2$, och Atlas Copco är det närmaste jämförelsebolaget. Comps ger
+429,5\kr{} på EV/EBITDA mot kursen 362,10, medan Gordon-DCF:en ger 210,0. Det är samma mönster
+som i caset. Jämförelsebolagens median är 20,2 gånger EBITDA, men DCF:ens standardvärde för
+exit-multipeln begränsas till intervallet 4 till 20, och utskriften säger det: ”20.2x clipped
+to 20.0x”.
+\end{losning}
+
+\subsubsection*{LBO och IRR}
+
+\begin{ovning}[penna och papper]
+Ett bolag med EBITDA 200 köps för 8 gånger EBITDA med lån på 5 gånger EBITDA (bortse från
+avgifter). Efter fem år är EBITDA 260, nettoskulden 600 och bolaget säljs för 9 gånger EBITDA.
+Beräkna MOIC och IRR, och dela upp värdeskapandet enligt~\eqref{eq:attribution}.
+\end{ovning}
+\begin{losning}
+Köp: rörelsevärde 1\,600, lån 1\,000, insats 600. Försäljning: $9 \cdot 260 = 2\,340$, minus
+skuld 600 ger 1\,740. $\MOIC = 1\,740 / 600 = 2,9$ och $\IRR = 2,9^{1/5} - 1 = 23,7$\pct.
+Uppdelning: resultattillväxt $60 \cdot 8 = 480$, multipel $1 \cdot 260 = 260$, amortering
+$1\,000 - 600 = 400$. Summa $1\,140 = 1\,740 - 600$, och andelarna är 42, 23 och 35\pct.
+\end{losning}
+
+\begin{ovning}[penna och papper]
+(a) Beräkna internräntan för kassaflödena $-100, +60, +60$. (b) Visa att flödena
+$-100, +230, -132$ har två internräntor. Vilken returnerar motorns \kod{compute_irr}?
+\end{ovning}
+\begin{losning}
+(a) Med $x = 1/(1+r)$: $60x^2 + 60x - 100 = 0$, så
+$x = (-60 + \sqrt{3\,600 + 24\,000})/120 = 0,884$ och $r = 13,1$\pct. Den andra roten är
+negativ och saknar betydelse. (b) Multiplicera~\eqref{eq:irr} med $(1+r)^2$:
+$100(1+r)^2 - 230(1+r) + 132 = 0$, så $1 + r = (230 \pm 10)/200$, alltså $r = 10$\pct{} eller
+$r = 20$\pct. Två teckenbyten tillåter två positiva rötter. Motorn returnerar den minsta,
+10\pct.
+\end{losning}
+
+\begin{ovning}[kör motorn]
+Kontrollera motorns betalningsförmåga: kör en LBO på Atlas Copco till det pris som ska ge
+20\pct{} och läs av avkastningen. Vilken av de tre källorna dominerar, och vad säger det?
+\begin{lstlisting}
+from valuation_engine.pipeline import run_valuation
+from valuation_engine.models import lbo
+
+r = run_valuation("ATCO-A.ST", offline=True)
+price = r.lbo.ability_to_pay[0.20]                       # 117.93
+x = lbo.run_lbo(r.company, lbo.with_entry_price(r.lbo.assumptions, price))
+print(x.irr, x.moic, x.entry_multiple)
+print(x.attribution)
+\end{lstlisting}
+\end{ovning}
+\begin{losning}
+IRR är 20,0\pct, MOIC 2,49 och köpmultipeln 13,3. Uppdelningen i mdkr: resultattillväxt 132,9,
+multipelförändring 329,1, amortering 98,6 och avgifter $-16,6$, summa 544,0. Multipeln står
+för 60\pct{} av värdeskapandet: bolaget köps till 13,3 och säljs till jämförelsebolagens 19,4
+gånger EBITDA. LBO-värdet vilar alltså tungt på samma exit-multipel som exit-DCF:en, vilket
+är en av casets redovisade svagheter.
+\end{losning}
+
+\subsubsection*{Monte Carlo}
+
+\begin{ovning}[penna och papper]
+(a) Bestäm Choleskyfaktorn för korrelationsmatrisen med $\rho = 0,3$ i två dimensioner. (b)
+Avbilda dragningen $z = (1,0;\; -0,5)$. (c) Visa att $x_2$ har varians 1 och att
+$\Cov(x_1, x_2) = \rho$.
+\end{ovning}
+\begin{losning}
+(a) Enligt~\eqref{eq:cholesky2}: $L_{21} = 0,3$ och $L_{22} = \sqrt{1 - 0,09} = 0,954$. (b)
+$x_1 = 1,0$ och $x_2 = 0,3 \cdot 1,0 + 0,954 \cdot (-0,5) = -0,177$. (c)
+$\Var(x_2) = \rho^2 + (1 - \rho^2) = 1$ och
+$\Cov(x_1, x_2) = \Cov(z_1,\, \rho z_1 + \sqrt{1-\rho^2}\, z_2) = \rho$, eftersom $z_1$ och $z_2$
+är oberoende.
+\end{losning}
+
+\begin{ovning}[penna och papper]
+Simuleringen för Atlas Copco har standardavvikelsen 32,7\kr. (a) Hur många dragningar krävs
+för ett medelfel på högst 0,10\kr? (b) Uppskatta med Taylorutvecklingen i
+avsnitt~\ref{sec:mc} hur mycket medelvärdet lyfts över basfallet av osäkerheten i WACC
+ensam. Den trunkerade fördelningens faktiska standardavvikelse är 0,88 procentenheter och
+$r - g = 5,65$.
+\end{ovning}
+\begin{losning}
+(a) $n \ge (32,7 / 0,10)^2 \approx 107\,000$. (b) Den relativa höjningen är
+$\sigma^2/(r-g)^2 = (0,88/5,65)^2 = 2,4$\pct. Motorn bekräftar: med standardavvikelsen noll
+för de tre andra drivarna blir medelvärdet 118,9\kr, vilket är 2,6\pct{} över basfallets
+115,8, medan medianen stannar på 116,0.
+\end{losning}
+
+\begin{ovning}[kör motorn]
+Kör simuleringen med 100\,000 dragningar och slumpfrö 7. Hur mycket flyttar sig percentilerna
+jämfört med standardkörningen, och vad är slutsatsen?
+\begin{lstlisting}[style=sh]
+python -m valuation_engine ATCO-A.ST --offline --no-charts --no-excel --simulations 100000 --seed 7
+\end{lstlisting}
+\end{ovning}
+\begin{losning}
+Utskriften ger P10 84,01, P50 116,32 och P90 165,18, mot 84,29, 116,74 och 164,92 med 10\,000
+dragningar och slumpfrö 42. Skillnaderna är några tiondels kronor. Simuleringsfelet är alltså
+försumbart jämfört med osäkerheten i antagandena, och 10\,000 dragningar räcker.
+\end{losning}
+
+\clearpage
+\subsection{Ordlista}
+
+Svenska termer i bokstavsordning med de engelska motsvarigheter som används i intervjuer.
+
+\begingroup
+\small
+\setlength{\columnsep}{1.6em}\setlength{\parskip}{0pt}
+\begin{multicols}{2}
+\raggedright
+\newcommand{\ord}[2]{\noindent\textbf{#1}\quad\textenglish{\emph{#2}}\par\vspace{0.22em}}
+\ord{aktievärde, börsvärde}{equity value, market capitalization}
+\ord{amortering}{debt repayment, amortization}
+\ord{anläggningstillgångar}{property, plant and equipment (PP\&E), fixed assets}
+\ord{avkastningskrav på eget kapital}{cost of equity}
+\ord{avskrivningar}{depreciation and amortization (D\&A)}
+\ord{balansräkning}{balance sheet}
+\ord{betalningsförmåga}{ability to pay}
+\ord{brygga}{equity bridge, EV to equity bridge}
+\ord{bruttoresultat}{gross profit}
+\ord{budpremie}{takeover premium}
+\ord{börsintroduktion}{initial public offering (IPO)}
+\ord{checkkredit}{revolving credit facility (revolver)}
+\ord{diskonteringsränta}{discount rate}
+\ord{efterställt lån}{subordinated debt, mezzanine}
+\ord{eget kapital}{shareholders' equity}
+\ord{evig tillväxt}{terminal growth, perpetual growth rate}
+\ord{fritt kassaflöde}{free cash flow (FCF)}
+\ord{förvärv}{acquisition}
+\ord{halvårskonvention}{mid-year convention}
+\ord{hävstång}{leverage}
+\ord{internränta}{internal rate of return (IRR)}
+\ord{investeringar}{capital expenditures (capex)}
+\ord{jämförelsebolag}{comparable companies, peers}
+\ord{jämförbara transaktioner}{precedent transactions}
+\ord{kassaflödesanalys}{cash flow statement}
+\ord{kassakonvertering}{cash conversion}
+\ord{kundfordringar}{accounts receivable}
+\ord{källor och användning}{sources and uses}
+\ord{känslighetsanalys}{sensitivity analysis}
+\ord{lager}{inventory}
+\ord{leverantörsskulder}{accounts payable}
+\ord{låneränta}{cost of debt}
+\ord{medelfel}{standard error}
+\ord{minoritetsintressen}{minority interest, non-controlling interests}
+\ord{multipel}{multiple}
+\ord{nettoresultat}{net income}
+\ord{nettoskuld}{net debt}
+\ord{nuvärde}{present value (PV)}
+\ord{nyemission}{rights issue, share issue}
+\ord{omsättning}{revenue, sales}
+\ord{resultaträkning}{income statement}
+\ord{riskfri ränta}{risk-free rate}
+\ord{riskkapitalbolag}{private equity firm, financial sponsor}
+\ord{riskpremie}{equity risk premium (ERP)}
+\ord{rullande tolv månader}{last twelve months (LTM)}
+\ord{rörelsekapital}{net working capital (NWC)}
+\ord{rörelseresultat}{operating income, EBIT}
+\ord{rörelsevärde}{enterprise value (EV)}
+\ord{seniort lån}{senior debt, term loan}
+\ord{skattesköld}{tax shield}
+\ord{skuldsättning}{leverage, gearing}
+\ord{slutvärde}{terminal value (TV)}
+\ord{storlekspremie}{size premium}
+\ord{stubbperiod}{stub period}
+\ord{uppköp, lånefinansierat}{leveraged buyout (LBO)}
+\ord{utdelning}{dividend}
+\ord{vägd kapitalkostnad}{weighted average cost of capital (WACC)}
+\end{multicols}
+\endgroup

@@ -1,0 +1,213 @@
+\section{Kodgenomgång}
+\label{sec:kod}
+
+\subsection{Arkitektur}
+
+Koden är byggd i lager, och pilarna i figur~\ref{fig:arkitektur} går bara åt ett håll.
+Datalagret vet ingenting om modellerna, modellerna vet ingenting om diagram, och allt möts i
+ett gemensamt kontrakt: datatyperna i \kod{core/types.py}. Det gör att varje del kan testas för
+sig och bytas ut.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[font=\footnotesize\sffamily,
+  srcbox/.style={draw=black!45,rounded corners=2pt,fill=black!4,align=center,inner sep=4pt,
+              minimum height=9mm,minimum width=4.5cm},
+  layerbox/.style={draw=accent,rounded corners=2pt,fill=accent!5,align=center,inner sep=5pt,
+              minimum width=15cm,text width=14.4cm},
+  modelbox/.style={draw=accent,rounded corners=2pt,fill=white,align=center,inner sep=3pt,
+              minimum width=2.75cm,minimum height=11mm},
+  outbox/.style={draw=boxgreen,rounded corners=2pt,fill=boxgreen!6,align=center,inner sep=3pt,
+              minimum width=3.55cm,minimum height=12mm},
+  flow/.style={-{Stealth[length=5pt]},thick,draw=black!60},
+  lbl/.style={font=\scriptsize\sffamily,text=black!70,inner sep=1pt}]
+  % data layer and its sources
+  \node[layerbox] (data) {\textbf{data/}\quad \texttt{yahoo.py},
+    \texttt{riksbank.py} $\rightarrow$ \texttt{store.py} (cache och fixtures) $\rightarrow$
+    \texttt{mapping.py}, \texttt{fx.py}, \texttt{universe.py} $\rightarrow$ \texttt{loader.py},
+    \texttt{market\_params.py}};
+  \node[srcbox,above=7mm of data] (riks) {Riksbanken\\ (riskfri ränta, valutakurser)};
+  \node[srcbox,anchor=south west] (yahoo) at ($(data.north west)+(0,7mm)$)
+    {Yahoo Finance\\ (bokslut, kurser, universum)};
+  \node[srcbox,anchor=south east] (damo) at ($(data.north east)+(0,7mm)$)
+    {Referensfil, Damodaran\\ (riskpremie, skattesats)};
+  \node[layerbox,below=6mm of data,fill=white] (types) {\textbf{core/types.py}\quad
+    \texttt{CompanyData}\enspace \texttt{PeerSnapshot}\enspace \texttt{MarketParameters}\enspace
+    \texttt{DCFAssumptions}\enspace \texttt{ValuationResult}};
+  % models inside the pipeline
+  \node[modelbox,anchor=north west] (comps) at ($(types.south west)+(2.5mm,-14mm)$)
+    {\textbf{comps.py}\\ jämförelsebolag};
+  \node[modelbox,right=12.5mm of comps] (dcf) {\textbf{dcf.py}\\ WACC och DCF};
+  \node[modelbox,right=12.5mm of dcf] (lbo) {\textbf{lbo.py}\\ LBO};
+  \node[modelbox,right=12.5mm of lbo] (mc) {\textbf{monte\_carlo.py}\\ simulering};
+  \coordinate (padtop) at ($(comps.north west)+(0,1.5mm)$);
+  \coordinate (padbottom) at ($(mc.south east)+(0,-6mm)$);
+  \node[draw=accent,dashed,rounded corners=3pt,inner xsep=2.5mm,inner ysep=2mm,
+        fit=(padtop)(padbottom)(comps)(mc)] (pipe) {};
+  \node[font=\footnotesize\sffamily\bfseries,text=accent,fill=white,inner sep=2pt,anchor=west]
+        at ($(pipe.north west)+(3mm,0)$) {pipeline.py kör modellerna i models/};
+  \node[layerbox,below=7mm of pipe,fill=white,minimum width=6cm,text width=5.6cm] (report)
+    {\textbf{ValuationReport}\quad alla resultat för ett bolag};
+  % outputs
+  \node[outbox,anchor=north west] (viz) at ($(report.south -| types.west)+(0,-9mm)$)
+    {\textbf{viz/}\\ 16 diagram, football field};
+  \node[outbox,right=2.67mm of viz] (xl) {\textbf{export/excel.py}\\ arbetsbok, sju flikar};
+  \node[outbox,right=2.67mm of xl] (app) {\textbf{app/streamlit\_app.py}\\ webbapp};
+  \node[outbox,right=2.67mm of app] (cli) {\textbf{\_\_main\_\_.py}, \textbf{batch.py}\\
+    kommandorad, alla bolag};
+  % edges
+  \draw[flow] (yahoo.south) to (yahoo.south |- data.north);
+  \draw[flow] (riks.south) to (data.north);
+  \draw[flow] (damo.south) to (damo.south |- data.north);
+  \draw[flow] (data.south) to (types.south |- data.south) to (types.north);
+  \draw[flow] (types.south) to (types.south |- pipe.north);
+  \draw[flow] (comps.east) to node[lbl,above=1pt] {peers} (dcf.west);
+  \draw[flow] (dcf.east) to node[lbl,above=1pt] {prognos} (lbo.west);
+  \draw[flow] (dcf.south) to[out=-18,in=-162,looseness=0.45]
+    node[lbl,below=0.5pt,pos=0.5] {basfall} (mc.south);
+  \draw[flow] (pipe.south) to (report.north);
+  \coordinate (bus) at ($(report.south)+(0,-4.5mm)$);
+  \draw[thick,draw=black!60] (report.south) to (bus);
+  \draw[flow] (bus) -| (viz.north);
+  \draw[flow] (bus) -| (xl.north);
+  \draw[flow] (bus) -| (app.north);
+  \draw[flow] (bus) -| (cli.north);
+\end{tikzpicture}
+\caption{Arkitekturen: data, modeller, pipeline och presentation. Pipelinen kör comps först och
+skickar jämförelsebolagen till DCF:en. LBO:n får DCF:ens prognos och exit-multipel, och
+simuleringen utgår från DCF:ens basfall.}
+\label{fig:arkitektur}
+\end{figure}
+
+\subsection{Modul för modul}
+
+\begin{description}
+  \item[\kod{core/types.py}] Kontraktet. Alla belopp är absoluta tal i bolagets handelsvaluta,
+    kostnader lagras som positiva tal, och räntor som decimaltal. En post som saknas är
+    \kod{NaN}, aldrig en saknad kolumn. Tabell~\ref{tab:typer} listar de viktigaste typerna.
+  \item[\kod{data/}] \kod{yahoo.py} är den enda modul som pratar med nätet. Den sparar råa svar
+    som JSON i en lokal cache, och alla objekt byggs sedan från de filerna. \kod{mapping.py}
+    översätter Yahoos radnamn till standardposter genom ordnade reservkedjor, och vilken källa
+    som användes sparas i \kod{source_map}. \kod{universe.py} rensar Yahoos lista från 984
+    symboler till 687 bolag (ett aktieslag per bolag). \kod{fx.py} räknar om bolag som
+    rapporterar i annan valuta med Riksbankens kurser. Detaljerna står i
+    \kod{docs/data_mapping.md}.
+  \item[\kod{models/dcf.py}] \kod{default_assumptions} bygger antagandena ur historiken,
+    \kod{compute_wacc} räknar WACC med alla delsteg, och \kod{dcf_core} gör själva
+    aritmetiken. \kod{dcf_core} är vektoriserad och den enda platsen där DCF-formlerna finns:
+    basfallet, känslighetstabellerna och simuleringen anropar samma funktion.
+  \item[\kod{models/comps.py}] \kod{run_comps} väljer jämförelsebolag enligt
+    avsnitt~\ref{sec:peers-arligt}. Varje avsteg från huvudvägen loggas i
+    \kod{CompsResult.fallbacks}.
+  \item[\kod{models/lbo.py}] \kod{run_lbo} bygger affären, skuldschemat och avkastningen.
+    \kod{compute_irr} och lösaren för betalningsförmåga ligger här.
+  \item[\kod{models/monte_carlo.py}] \kod{run_monte_carlo} tar DCF:ens exakta indata
+    (\kod{DCFResult.core_inputs}), byter fyra av dem mot vektorer och anropar \kod{dcf_core}.
+  \item[\kod{pipeline.py}] \kod{run_valuation(ticker)} kör allt för ett bolag och returnerar
+    en \kod{ValuationReport}. En modell som inte går att tillämpa kastar
+    \kod{NotApplicableError} med en förklaring, och de andra modellerna körs ändå. Banker och
+    fastighetsbolag får till exempel bara P/E.
+  \item[\kod{batch.py}, \kod{__main__.py}] Kommandoraden. \kod{run_universe} värderar alla
+    bolag och skriver en CSV-fil med en rad per bolag.
+  \item[\kod{viz/}, \kod{export/excel.py}, \kod{app/}] Diagram med matplotlib i gemensam stil,
+    en Excel-arbetsbok med flikarna Summary, Assumptions, DCF, Comps, LBO, Monte Carlo och
+    Data (blå text för indata, svart för beräknat), och en Streamlit-app där antagandena kan
+    ändras i sidopanelen.
+\end{description}
+
+\begin{table}[ht]
+\centering\small
+\caption{De viktigaste datatyperna.}
+\label{tab:typer}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X@{}}
+\toprule
+Typ & Innehåll \\
+\midrule
+\kod{CompanyData} & Allt om ett bolag: \kod{profile} (namn, sektor, valuta), \kod{statements}
+  (tre rapporter som tabeller per räkenskapsår), \kod{market} (kurs, börsvärde, skuld, kassa)
+  och \kod{price_history} (veckokurser för beta) \\
+\kod{PeerSnapshot} & En rad per bolag i universumet, i kronor: börsvärde, rörelsevärde,
+  omsättning, EBITDA, vinst, beta. Används av comps och för beta \\
+\kod{MarketParameters} & Riskfri ränta, riskpremie, skattesats, index och evig tillväxt \\
+\kod{DCFAssumptions} & Tillväxt och marginal per år, avskrivningar, capex och rörelsekapital
+  som andel av omsättningen, skatt, WACC, evig tillväxt, exit-multipel \\
+\kod{ValuationResult} & En stapel i football field: \kod{method}, \kod{low}, \kod{base},
+  \kod{high}. Varje modell har \kod{to_valuation_results()} \\
+\kod{ValuationReport} & Pipelinens resultat: de fyra modellresultaten, staplarna, varningar och
+  parametrarnas källor \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Installera och köra}
+
+\begin{lstlisting}[style=sh,caption={Installation och de vanligaste kommandona.},label=lst:kor]
+# installation (Python 3.11 eller senare)
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+
+# ett bolag: skriver ut en sammanfattning och sparar diagram, Excel och summary.json
+python -m valuation_engine ATCO-A.ST --offline
+
+# hela universumet: ladda först ned data (ungefär 18 minuter), kör sedan alla bolag
+python -m valuation_engine.data.download --all
+python -m valuation_engine --all
+
+# appen och testerna
+streamlit run app/streamlit_app.py
+pytest
+\end{lstlisting}
+
+Resultaten hamnar i \kod{output/<TICKER>/}. Användbara flaggor: \flag{simulations} och
+\flag{seed} för simuleringen, \flag{no-size-premium} för ren CAPM, och \flag{universe-peers}
+för att låta DCF:en hämta beta och exit-multipel från hela branschen i stället för från comps.
+Samma sak från Python:
+
+\begin{lstlisting}[caption={Motorn som bibliotek: basfallet, och caset med två ändrade
+antaganden.},label=lst:api]
+from dataclasses import replace
+from valuation_engine.pipeline import run_valuation
+from valuation_engine.models import dcf
+
+report = run_valuation("ATCO-A.ST", offline=True)
+print(round(report.dcf.value_per_share_gordon, 2))        # 115.85
+for v in report.valuations:
+    print(v.label, round(v.low, 1), round(v.base, 1), round(v.high, 1))
+
+base = dcf.default_assumptions(report.company, report.params)
+mine = replace(base, tax_rate=0.219, nwc_pct_revenue=0.133)
+adjusted = run_valuation("ATCO-A.ST", offline=True, dcf_assumptions=mine)
+print(round(adjusted.dcf.value_per_share_gordon, 1))      # 115.9
+\end{lstlisting}
+
+\subsection{Offline-läge och fixtures}
+
+Med flaggan \flag{offline} eller miljövariabeln \kod{VALUATION_ENGINE_OFFLINE=1} rör motorn
+aldrig nätet. Den läser då i första hand de frysta testdata som ligger i repot
+(\kod{tests/fixtures/}) och i andra hand den lokala cachen. Fixtures innehåller femton bolag
+(Atlas Copco och fjorton andra storbolag, bland dem banken SEB), hela universumlistan, tabellen
+med alla jämförelsebolag och Riksbankens serier. Det räcker för att köra caset exakt, eftersom
+comps bara behöver tabellen. Hela universumet kräver nedladdning, eftersom cachen inte ligger
+i git. Och eftersom alla objekt byggs från sparade råfiler ger en körning offline exakt samma
+tal som den körning som skapade filerna.
+
+\subsection{Testerna}
+
+Testerna ligger i \kod{tests/}, en fil per del: \kod{test_types}, \kod{test_data},
+\kod{test_dcf}, \kod{test_wacc}, \kod{test_comps}, \kod{test_lbo}, \kod{test_monte_carlo},
+\kod{test_pipeline}, \kod{test_cli_batch}, \kod{test_export_viz} och \kod{test_app}. Sviten har
+omkring 650 tester och går på ungefär en minut. Tre idéer är värda att ta med sig:
+
+\begin{itemize}
+  \item \textbf{Inget nät.} \kod{conftest.py} slår på offline-läget, pekar cachen mot en tom
+    katalog och får varje försök att öppna en nätverksanslutning att fälla testet. Tester som
+    behöver nätet är märkta \kod{network} och körs inte som standard.
+  \item \textbf{Invarianter.} \kod{invariants.py} räknar om samband som måste gälla för
+    \emph{varje} bolag, ur de tabeller modellerna rapporterar: att FCFF är summan av sina delar,
+    att bryggan går ihop, att källor är lika med användning, att skulden aldrig blir negativ.
+    \kod{test_fixture_universe.py} kör alla modeller på alla fixtures och på en svärm av
+    syntetiska bolag. En modell ska antingen ge ett resultat som klarar invarianterna eller
+    kasta \kod{NotApplicableError}.
+  \item \textbf{Kända facit.} Där det finns en sluten lösning testas den: noll varians i
+    simuleringen ska ge basfallet exakt, och ett fast slumpfrö ska ge identiska resultat.
+\end{itemize}
