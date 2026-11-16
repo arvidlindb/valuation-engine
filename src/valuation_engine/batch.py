@@ -458,6 +458,17 @@ def build_summary_markdown(
 # --------------------------------------------------------------------------
 
 
+def _save_football_field(report: ValuationReport, path_without_ext: Path) -> None:
+    """Write the football field of ``report`` as a PNG; a chart failure is only logged."""
+    from .viz import report_football_field, save_figure  # lazy: needs matplotlib
+
+    try:
+        path_without_ext.parent.mkdir(parents=True, exist_ok=True)
+        save_figure(report_football_field(report), path_without_ext, formats=("png",))
+    except Exception as exc:  # noqa: BLE001 - a chart must never stop the run
+        logger.warning("%s: football field failed: %s", report.ticker, exc, exc_info=True)
+
+
 def run_universe(
     tickers: Sequence[str] | None = None,
     *,
@@ -472,6 +483,8 @@ def run_universe(
     with_reports: bool = False,
     charts: bool = True,
     excel: bool = True,
+    football_fields: bool = False,
+    min_methods: int = 4,
     progress: bool = True,
     stream: TextIO | None = None,
 ) -> BatchResult:
@@ -496,6 +509,10 @@ def run_universe(
     with_reports:
         Also write charts (``charts``) and the Excel workbook (``excel``) per
         company into ``<output_dir>/<TICKER>/``. Slow: about a second each.
+    football_fields, min_methods:
+        Write one football field chart per company as
+        ``<output_dir>/football_fields/<TICKER>.png``, for every company with at
+        least ``min_methods`` valuation methods (the 52-week range not counted).
     progress, stream:
         Print a progress line every 25 companies to ``stream`` (default stderr).
     """
@@ -561,6 +578,8 @@ def run_universe(
                 )
                 if with_reports:
                     save_report(report, folder / ticker, charts=charts, excel=excel)
+                if football_fields and len(report.valuations) >= min_methods:
+                    _save_football_field(report, folder / "football_fields" / ticker)
                 rows.append(report_row(report, snapshot))
             except Exception as exc:  # noqa: BLE001 - one company must never stop the run
                 failures[ticker] = f"{type(exc).__name__}: {exc}"

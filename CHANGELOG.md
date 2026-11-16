@@ -11,6 +11,7 @@ First version. It values every Swedish company on Yahoo Finance with four method
 ### Added
 
 - Data layer for Swedish stocks on Yahoo Finance. It builds the company list from Yahoo's screener (984 symbols, 687 companies after filtering and keeping one share class each) and maps Yahoo's statements to one standard set of line items, with a fallback chain per item.
+- `--football-fields` with `--all`: one football field chart per company that has enough valuation methods.
 - Local cache for all downloaded data, and a download command that can be stopped and started again (`python -m valuation_engine.data.download --all`).
 - Offline mode (`--offline` or `VALUATION_ENGINE_OFFLINE=1`) with frozen data for 15 companies in `tests/fixtures/`, so the tests and the demo run without a network.
 - DCF on free cash flow to the firm: five year forecast from the company's own history, WACC from CAPM with a peer beta, Gordon growth and exit multiple terminal values, mid-year discounting, sensitivity tables and an equity bridge.

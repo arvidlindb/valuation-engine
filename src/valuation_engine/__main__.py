@@ -108,6 +108,21 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="with --all: also write charts and the Excel workbook per company (slow)",
     )
+    parser.add_argument(
+        "--football-fields",
+        action="store_true",
+        help=(
+            "with --all: write one football field chart per company into "
+            "<output-dir>/football_fields/, for companies with enough methods"
+        ),
+    )
+    parser.add_argument(
+        "--min-methods",
+        type=int,
+        default=4,
+        metavar="N",
+        help="with --football-fields: methods a company needs to get a chart (default: 4)",
+    )
     parser.add_argument("--quiet", action="store_true", help="no progress output with --all")
     parser.add_argument("--version", action="version", version=f"valuation-engine {__version__}")
     return parser
@@ -165,6 +180,8 @@ def _run_all(args: argparse.Namespace, seed: int | None) -> int:
         with_reports=args.with_reports,
         charts=not args.no_charts,
         excel=not args.no_excel,
+        football_fields=args.football_fields,
+        min_methods=args.min_methods,
         progress=not args.quiet,
     )
     counts = result.status_counts
@@ -184,8 +201,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         parser.error("give at least one ticker, or --all")
     if args.simulations is not None and args.simulations < 1:
         parser.error("--simulations must be at least 1")
-    if not args.all_companies and (args.limit is not None or args.with_reports):
-        parser.error("--limit and --with-reports require --all")
+    if not args.all_companies and (
+        args.limit is not None or args.with_reports or args.football_fields
+    ):
+        parser.error("--limit, --with-reports and --football-fields require --all")
     logging.basicConfig(level=logging.ERROR, format="%(levelname)s %(name)s: %(message)s")
     seed = args.seed if args.seed >= 0 else None
     if args.all_companies:

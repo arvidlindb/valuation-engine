@@ -119,6 +119,7 @@ The tests run offline against the frozen data. The one deselected test needs the
 | `--universe-peers` | DCF takes beta and exit multiple from the whole industry instead of the comps peers |
 | `--no-charts`, `--no-excel` | skip the charts or the workbook |
 | `--limit N`, `--with-reports` | with `--all`: only the first N companies, or charts and Excel for each one |
+| `--football-fields` | with `--all`: one football field chart per company that has enough methods (`--min-methods N`, default 4) |
 
 `python -m valuation_engine --help` has the full list.
 
@@ -138,6 +139,7 @@ The whole universe:
 ```
 output/universe_valuation.csv   one row per company
 output/universe_summary.md      coverage per method and why models did not apply
+output/football_fields/         one chart per company, with --football-fields
 ```
 
 ## How it fits together

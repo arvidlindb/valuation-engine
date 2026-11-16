@@ -419,3 +419,20 @@ def test_batch_survives_a_company_that_crashes(
     assert frame.loc["ABB.ST", "errors"] == "RuntimeError: synthetic crash"
     assert result.failures == {"ABB.ST": "RuntimeError: synthetic crash"}
     assert "unexpected failure" in result.summary_path.read_text(encoding="utf-8")
+
+
+def test_batch_writes_one_football_field_per_company_with_enough_methods(tmp_path: Path) -> None:
+    result = batch.run_universe(
+        ["ATCO-A.ST", "SEB-A.ST"],
+        offline=True,
+        output_dir=tmp_path,
+        n_simulations=200,
+        progress=False,
+        football_fields=True,
+        min_methods=4,
+    )
+    assert len(result.frame) == 2
+    charts = sorted(p.name for p in (tmp_path / "football_fields").iterdir())
+    # Atlas Copco has seven methods; the bank only has P/E and gets no chart.
+    assert charts == ["ATCO-A.ST.png"]
+    assert (tmp_path / "football_fields" / "ATCO-A.ST.png").stat().st_size > 10_000
